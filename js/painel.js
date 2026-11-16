@@ -133,7 +133,7 @@
     function fallback() {
       var ta = document.createElement('textarea');
       ta.value = texto; document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); ok(); } catch (e) { btn.textContent = 'Não foi possível copiar'; }
+      try { document.execCommand('copy'); ok(); } catch (err) { btn.textContent = 'Não foi possível copiar (' + err.message + ')'; }
       document.body.removeChild(ta);
     }
   }
