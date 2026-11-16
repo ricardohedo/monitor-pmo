@@ -106,6 +106,18 @@
             fullscreen: true
           });
         }
+      }, {
+        icon: { dark: url('./icons/matriz.svg'), light: url('./icons/matriz.svg') },
+        text: 'Matriz PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Matriz impacto × esforço',
+            url: url('./matriz.html'),
+            accentColor: '#0c66e4',
+            height: 640,
+            fullscreen: true
+          });
+        }
       }];
     }
   });

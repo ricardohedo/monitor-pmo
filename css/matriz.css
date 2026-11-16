@@ -1,0 +1,27 @@
+.chk { font-size: 13px; color: var(--suave); cursor: pointer; user-select: none; }
+.mx { display: grid; grid-template-columns: 84px repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.mx .cab { text-align: center; font-size: 12px; font-weight: 600; color: var(--suave); padding: 6px 0; border: 1px solid var(--borda);
+  border-radius: 4px; background: #fff; }
+.mx .cab.lado { display: flex; align-items: center; justify-content: center; padding: 6px; }
+.mx .cel { border: 1px solid var(--borda); border-radius: 6px; padding: 8px; min-height: 96px; background: #fafbfc; display: flex; flex-direction: column; }
+.mx .cel.q-fazer { background: #e3fcef; border-color: #b7ead2; }
+.mx .cel.q-planejar { background: #fff7d6; border-color: #f5e08c; }
+.mx .cel.q-vitoria { background: #e9f2ff; border-color: #b8d4fb; }
+.mx .cel.q-reavaliar { background: #ffeceb; border-color: #f7c4c0; }
+.mx .cel .tit { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 700; color: #44546f; margin-bottom: 6px; min-height: 16px; }
+.mx .cel .tit span { background: rgba(255,255,255,.75); border-radius: 10px; padding: 0 7px; font-weight: 600; }
+.mx .itens { overflow: auto; max-height: 230px; }
+.mx .it { display: flex; gap: 6px; align-items: flex-start; font-size: 13px; line-height: 1.3; margin: 0 0 5px; }
+.mx .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; }
+.mx .dot.verde { background: #2e9b6a; } .mx .dot.amarelo { background: #d9a400; }
+.mx .dot.vermelho { background: #d4453a; } .mx .dot.cinza { background: #a5adba; }
+.mx .it a.card { font-size: 13px; }
+.mx .pri { display: inline-block; font-size: 10px; border-radius: 3px; padding: 0 4px; background: rgba(9, 30, 66, .12); color: #44546f; margin-left: 4px; vertical-align: 1px; }
+.mx .pri.max { background: #c9372c; color: #fff; } .mx .pri.alta { background: #f5cd47; color: #5e4300; }
+.mx .vazio-cel { color: #8590a2; font-size: 12px; }
+.legenda { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color: var(--suave); align-items: center; }
+.legenda .d { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; }
+.legenda .d.verde { background: #2e9b6a; } .legenda .d.amarelo { background: #d9a400; } .legenda .d.vermelho { background: #d4453a; } .legenda .d.cinza { background: #a5adba; }
+.semclass { margin-top: 16px; }
+.semclass li { margin: 4px 0; font-size: 13px; }
+.semclass .suave { margin-left: 4px; }

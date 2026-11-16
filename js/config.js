@@ -45,6 +45,22 @@
         marcosExtras: []
       },
 
+      // Matriz impacto x esforço (campos de lista do board: Alto / Médio / Baixo).
+      matriz: {
+        campoImpacto: 'Impacto no negócio',
+        campoEsforco: 'Esforço estimado',
+        campoPrioridade: 'Prioridade',
+        // Ordem de prioridade dentro de cada quadrante (a primeira aparece antes).
+        ordemPrioridade: ['Máxima', 'Alta', 'Média', 'Baixa'],
+        // Nome dos quadrantes, por impacto + esforço.
+        quadrantes: {
+          'alto|baixo': 'Fazer primeiro',
+          'alto|alto': 'Planejar com cuidado',
+          'baixo|baixo': 'Vitórias rápidas',
+          'baixo|alto': 'Reavaliar'
+        }
+      },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

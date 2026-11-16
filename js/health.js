@@ -47,6 +47,17 @@
     })[0] || null;
   }
 
+  // Texto da opção escolhida num campo personalizado do tipo lista, ou null.
+  function valorLista(card, camposDef, nomeCampo) {
+    var def = achaCampo(camposDef, nomeCampo);
+    var item = itemDoCampo(card, def);
+    if (!def || !item || !item.idValue) return null;
+    var op = (def.options || []).filter(function (o) {
+      return (o.id || o._id) === item.idValue;
+    })[0];
+    return op && op.value ? (op.value.text || null) : null;
+  }
+
   // Data de um campo personalizado do tipo data (ISO) ou null.
   function obterCampoData(card, camposDef, nomeCampo) {
     var item = itemDoCampo(card, achaCampo(camposDef, nomeCampo));
@@ -180,6 +191,7 @@
     calcularRitmo: calcularRitmo,
     obterPrazo: obterPrazo,
     obterCampoData: obterCampoData,
+    valorLista: valorLista,
     itemDoCampo: itemDoCampo,
     achaCampo: achaCampo,
     qtdMembros: qtdMembros,
