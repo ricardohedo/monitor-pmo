@@ -68,6 +68,8 @@
   /* Frase de abertura da tela. */
   function frase(resumo, nomeCompleto, agora, tzHoras) {
     var primeiro = String(nomeCompleto || '').trim().split(/\s+/)[0];
+    // "LETICIA" -> "Leticia"
+    primeiro = primeiro.charAt(0).toUpperCase() + primeiro.slice(1).toLowerCase();
     var abre = saudacao(agora, tzHoras) + (primeiro ? ', ' + primeiro : '') + '. ';
     if (!resumo.total) return abre + 'Nenhum projeto ativo sob sua responsabilidade.';
     var txt = abre + 'Você tem ' + plural(resumo.total, 'projeto ativo', 'projetos ativos') + ': ' +

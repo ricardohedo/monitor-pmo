@@ -102,6 +102,10 @@ describe('saudação e frase', () => {
     expect(f).toContain('1 projeto ativo: 0 críticos, 1 em atenção e 0 em dia.');
     expect(f).toContain('Próximo prazo: Hoje (hoje).');
   });
+  test('nome em maiúsculas vira só a inicial maiúscula', () => {
+    expect(fraseMeuDia(monta([]), 'LETICIA CHRISOSTOMO DA SILVA', AGORA, -3)).toBe(
+      'Boa tarde, Leticia. Nenhum projeto ativo sob sua responsabilidade.');
+  });
   test('frase sem projetos e sem nome', () => {
     expect(fraseMeuDia(monta([]), '', AGORA, -3)).toBe('Boa tarde. Nenhum projeto ativo sob sua responsabilidade.');
   });
