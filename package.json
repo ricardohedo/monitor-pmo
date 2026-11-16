@@ -1,0 +1,16 @@
+{
+  "name": "monitor-pmo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monitor PMO - Power-Up do Trello para gerentes de projeto",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": ["js/health.js"]
+  },
+  "devDependencies": {
+    "jest": "29.7.0"
+  }
+}
