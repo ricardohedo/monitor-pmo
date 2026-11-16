@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitor PMO - Pauta da reunião</title>
+  <link rel="stylesheet" href="./css/monitor.css">
+  <link rel="stylesheet" href="./css/pauta.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script defer src="./js/config.js"></script>
+  <script defer src="./js/health.js"></script>
+  <script defer src="./js/padrao.js"></script>
+  <script defer src="./js/riscos.js"></script>
+  <script defer src="./js/roadmap.js"></script>
+  <script defer src="./js/pauta.js"></script>
+  <script defer src="./js/pautaview.js"></script>
+</head>
+<body>
+  <div class="topo">
+    <div><strong id="titulo">Pauta da reunião</strong></div>
+    <div><button id="copiar" type="button" class="ativo">Copiar pauta</button> <span id="msg" class="suave"></span></div>
+  </div>
+  <p id="resumo" class="resumo"></p>
+  <div id="conteudo"><div class="vazio">Lendo o quadro...</div></div>
+</body>
+</html>

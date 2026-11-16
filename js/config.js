@@ -63,6 +63,15 @@
         tipos: { risco: 'risco', premissa: 'premissa' }
       },
 
+      // Pauta da reunião semanal.
+      pauta: {
+        diasPrazo: 7,        // seção "Prazo": vencidos e que vencem em até N dias
+        quasePronto: 0.9,    // seção "Reconhecer": checklists >= 90% e ainda abertas
+        minimoItens: 3,      // mínimo de itens de checklist para valer
+        diasVarejo: 45,      // datas do varejo olhadas nos próximos N dias
+        limiteLista: 6       // linhas por seção (o resto vira "e mais N")
+      },
+
       // "Meu dia": prazos listados na agenda (vencidos + próximos N dias).
       meuDia: { diasAgenda: 14 },
 

@@ -152,6 +152,18 @@
             fullscreen: false
           });
         }
+      }, {
+        icon: { dark: url('./icons/pauta.svg'), light: url('./icons/pauta.svg') },
+        text: 'Pauta PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Pauta da reunião semanal',
+            url: url('./pauta.html'),
+            accentColor: '#0c66e4',
+            height: 640,
+            fullscreen: false
+          });
+        }
       }];
     }
   });

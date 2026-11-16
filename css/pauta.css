@@ -1,0 +1,8 @@
+.resumo { font-weight: 600; margin: 10px 0 0; }
+.sec { margin-top: 14px; }
+.sec h3 { margin: 0 0 4px; font-size: 14px; }
+.sec ul { margin: 0; padding-left: 18px; }
+.sec li { margin: 0 0 4px; font-size: 13px; }
+.sec .resto { color: var(--suave); font-size: 12px; }
+.nada { margin-top: 12px; padding: 10px 12px; background: var(--verde-bg); border-radius: 4px; }
+.rodape { margin-top: 16px; color: var(--suave); font-size: 12px; }
