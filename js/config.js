@@ -45,6 +45,24 @@
         marcosExtras: []
       },
 
+      // Riscos e premissas, registrados na DESCRIÇÃO do card (uma linha por item):
+      //   - RISCO: o que pode dar errado | prob: alta | imp: alto | dono: Ana | resposta: o que fazer | revisar: 2026-12-10
+      //   - PREMISSA: o que estamos assumindo | dono: Ana | revisar: 2026-12-10
+      riscos: {
+        secao: 'RISCOS E PREMISSAS',
+        limiteAlto: 6,    // prob x imp >= 6 = alto
+        limiteMedio: 3,   // >= 3 = médio; abaixo = baixo
+        maxTexto: 140,    // só os primeiros N caracteres de cada campo são lidos
+        maxItens: 10,     // itens listados nas seções do painel
+        niveis: { alta: 3, alto: 3, '3': 3, media: 2, medio: 2, '2': 2, baixa: 1, baixo: 1, '1': 1 },
+        campos: {
+          prob: 'prob', probabilidade: 'prob', imp: 'imp', impacto: 'imp',
+          dono: 'dono', responsavel: 'dono', resposta: 'resposta', mitigacao: 'resposta',
+          revisar: 'revisar', revisao: 'revisar'
+        },
+        tipos: { risco: 'risco', premissa: 'premissa' }
+      },
+
       // "Meu dia": prazos listados na agenda (vencidos + próximos N dias).
       meuDia: { diasAgenda: 14 },
 

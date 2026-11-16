@@ -76,6 +76,16 @@
             (c.faltando.length > 1 ? ' +' + (c.faltando.length - 1) : '') : ''),
           color: c.percent === 100 ? 'green' : c.percent >= 70 ? 'yellow' : 'red'
         });
+        var riscos = M.riscosDoCard(d.card.desc, M.config, new Date());
+        if (riscos.length) {
+          var altos = riscos.filter(function (r) { return r.nivel === 'alto'; }).length;
+          var pend = riscos.filter(function (r) { return r.flags.length; }).length;
+          out.push({
+            title: 'Riscos',
+            text: riscos.length + ' · ' + altos + ' alto(s)' + (pend ? ' · ' + pend + ' pendência(s)' : ''),
+            color: altos ? 'red' : pend ? 'yellow' : 'green'
+          });
+        }
         return out;
       });
     },
@@ -125,6 +135,18 @@
           return t.modal({
             title: 'Meu dia: prazos e projetos sob minha responsabilidade',
             url: url('./meudia.html'),
+            accentColor: '#0c66e4',
+            height: 640,
+            fullscreen: false
+          });
+        }
+      }, {
+        icon: { dark: url('./icons/riscos.svg'), light: url('./icons/riscos.svg') },
+        text: 'Riscos PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Riscos e premissas dos projetos',
+            url: url('./riscos.html'),
             accentColor: '#0c66e4',
             height: 640,
             fullscreen: false
