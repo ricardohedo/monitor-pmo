@@ -1,3 +1,4 @@
+.opcoes { display: flex; gap: 16px; }
 .chk { font-size: 13px; color: var(--suave); cursor: pointer; user-select: none; }
 .rm { position: relative; margin-top: 12px; --nome: 240px; }
 .rm .linha { display: flex; align-items: center; min-height: 30px; border-bottom: 1px solid #f1f2f4; }
@@ -36,3 +37,7 @@
 .semdatas { margin-top: 16px; font-size: 13px; }
 .semdatas li { margin: 3px 0; }
 .semdatas .suave { margin-left: 4px; }
+
+.rm .barra-rm.cinza { background: repeating-linear-gradient(45deg, #e4e6ea, #e4e6ea 6px, #f1f2f4 6px, #f1f2f4 12px); }
+.rm .barra-rm.cinza .feito { background: #8c97a8; opacity: .7; }
+.legenda .l-cinza { background: #b6bcc7; }

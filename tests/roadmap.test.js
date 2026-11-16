@@ -190,3 +190,37 @@ describe('montarRoadmap', () => {
     expect(R.dataCurta(k(2026, 3, 5))).toBe('05/03');
   });
 });
+
+describe('roadmap: pausados', () => {
+  const d = ['2026-11-16T12:00:00.000Z', '2026-11-30T12:00:00.000Z'];
+  const cards = [
+    card({ id: 'v', name: 'Ativo' }, ...d),
+    card({ id: 'p', name: 'Pausado', labels: [{ name: 'Pausado' }] }, ...d),
+    card({ id: 'c', name: 'Concluído', idList: 'l-ok' }, ...d)
+  ];
+  const com = (flag) => R.montarRoadmap(cards, { agora: AGORA, camposDef: DEF, listas: LISTAS, incluirPausados: flag }, config);
+  const nomes = (r) => r.grupos.flatMap(g => g.itens).map(i => i.name);
+
+  test('por padrão os pausados ficam de fora', () => {
+    expect(nomes(com(false))).toEqual(['Ativo']);
+    expect(nomes(R.montarRoadmap(cards, { agora: AGORA, camposDef: DEF, listas: LISTAS }, config))).toEqual(['Ativo']);
+  });
+  test('incluindo pausados, eles aparecem em cinza e marcados', () => {
+    const r = com(true);
+    expect(nomes(r)).toEqual(['Ativo', 'Pausado']);
+    const p = r.grupos[0].itens.find(i => i.name === 'Pausado');
+    expect(p.cor).toBe('cinza');
+    expect(p.pausado).toBe(true);
+  });
+  test('concluídos nunca entram, mesmo incluindo pausados', () => {
+    expect(nomes(com(true))).not.toContain('Concluído');
+  });
+  test('pausado sem datas vai para a lista de sem datas, marcado como pausado', () => {
+    const r = R.montarRoadmap([card({ id: 'q', name: 'P sem data', labels: [{ name: 'Pausado' }] }, null, null)],
+      { agora: AGORA, camposDef: DEF, listas: LISTAS, incluirPausados: true }, config);
+    expect(r.semDatas[0].pausado).toBe(true);
+    const sem = R.montarRoadmap([card({ id: 'q', name: 'P sem data', labels: [{ name: 'Pausado' }] }, null, null)],
+      { agora: AGORA, camposDef: DEF, listas: LISTAS }, config);
+    expect(sem.semDatas).toEqual([]);
+  });
+});

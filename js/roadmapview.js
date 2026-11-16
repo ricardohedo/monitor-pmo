@@ -2,7 +2,7 @@
 (function () {
   var M = window.MonitorPMO;
   var t = window.TrelloPowerUp.iframe();
-  var estado = { dados: null, nomeBoard: '', mostrarVarejo: true };
+  var estado = { dados: null, nomeBoard: '', mostrarVarejo: true, incluirPausados: false, bruto: null };
 
   function el(tag, cls, txt) {
     var e = document.createElement(tag);
@@ -113,7 +113,7 @@
 
   function legenda() {
     var l = el('div', 'legenda');
-    [['l-verde', 'em dia'], ['l-amarelo', 'atenção'], ['l-vermelho', 'crítico']].forEach(function (x) {
+    [['l-verde', 'em dia'], ['l-amarelo', 'atenção'], ['l-vermelho', 'crítico'], ['l-cinza', 'pausado']].forEach(function (x) {
       var s = el('span'); s.appendChild(el('i', x[0])); s.appendChild(document.createTextNode(x[1])); l.appendChild(s);
     });
     var h = el('span'); h.appendChild(el('i', 'l-hoje')); h.appendChild(document.createTextNode('hoje')); l.appendChild(h);
@@ -132,7 +132,7 @@
       var a = el('a', 'card', s.name);
       a.addEventListener('click', function () { t.showCard(s.id); });
       li.appendChild(a);
-      li.appendChild(el('span', 'suave', '[' + s.lista + '] falta: ' + s.falta));
+      li.appendChild(el('span', 'suave', '[' + s.lista + (s.pausado ? ', pausado' : '') + '] falta: ' + s.falta));
       ul.appendChild(li);
     });
     box.appendChild(ul);
@@ -161,6 +161,17 @@
     t.sizeTo('body').catch(function () {});
   }
 
+  function montar() {
+    var b = estado.bruto;
+    estado.dados = M.montarRoadmap(b.cards, {
+      agora: new Date(), camposDef: b.camposDef, listas: b.listas,
+      incluirPausados: estado.incluirPausados
+    }, M.config);
+    document.getElementById('titulo').textContent = 'Roadmap - ' + estado.nomeBoard;
+    document.getElementById('sub').textContent = estado.dados.total + ' projetos com datas';
+    desenhar();
+  }
+
   t.render(function () {
     return Promise.all([
       t.cards('all'),
@@ -168,12 +179,8 @@
       t.board('name', 'customFields')
     ]).then(function (r) {
       estado.nomeBoard = r[2].name || 'Board';
-      estado.dados = M.montarRoadmap(r[0], {
-        agora: new Date(), camposDef: r[2].customFields || [], listas: r[1]
-      }, M.config);
-      document.getElementById('titulo').textContent = 'Roadmap - ' + estado.nomeBoard;
-      document.getElementById('sub').textContent = estado.dados.total + ' projetos com datas';
-      desenhar();
+      estado.bruto = { cards: r[0], listas: r[1], camposDef: r[2].customFields || [] };
+      montar();
     }).catch(function (e) {
       document.getElementById('conteudo').textContent = 'Erro ao carregar: ' + (e && e.message ? e.message : e);
     });
@@ -182,5 +189,9 @@
   document.getElementById('varejo').addEventListener('change', function (ev) {
     estado.mostrarVarejo = ev.target.checked;
     if (estado.dados) desenhar();
+  });
+  document.getElementById('pausados').addEventListener('change', function (ev) {
+    estado.incluirPausados = ev.target.checked;
+    if (estado.bruto) montar();
   });
 })();

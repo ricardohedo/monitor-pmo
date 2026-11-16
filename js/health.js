@@ -109,7 +109,7 @@
     if (contem(nomeLista, config.listasIgnoradas)) return null;
 
     if (card.dueComplete || contem(nomeLista, config.listasConcluidas)) {
-      return { cor: 'cinza', rotulo: 'Concluído', motivos: ['Concluído'],
+      return { cor: 'cinza', tipo: 'concluido', rotulo: 'Concluído', motivos: ['Concluído'],
                prazo: null, diasPrazo: null, ritmo: null };
     }
 
@@ -117,7 +117,7 @@
       return contem(l.name, config.etiquetasPausado);
     });
     if (pausado) {
-      return { cor: 'cinza', rotulo: 'Pausado', motivos: ['Pausado'],
+      return { cor: 'cinza', tipo: 'pausado', rotulo: 'Pausado', motivos: ['Pausado'],
                prazo: null, diasPrazo: null, ritmo: null };
     }
 

@@ -17,7 +17,9 @@ button { font: inherit; cursor: pointer; border: 1px solid var(--borda); backgro
 button:hover { background: #ebecf0; }
 button.ativo { background: var(--azul); border-color: var(--azul); color: #fff; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 12px; }
-.kpi { border-radius: 4px; padding: 10px 12px; border: 1px solid var(--borda); }
+.kpi { border-radius: 4px; padding: 10px 12px; border: 1px solid var(--borda); text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.kpi:hover { filter: brightness(.97); }
+.kpi.sel { outline: 2px solid var(--azul); outline-offset: 1px; }
 .kpi b { display: block; font-size: 26px; line-height: 1.1; }
 .kpi span { color: var(--suave); font-size: 12px; }
 .kpi.vermelho { background: var(--vermelho-bg); } .kpi.vermelho b { color: var(--vermelho); }
@@ -42,3 +44,9 @@ a.card:hover { text-decoration: underline; }
 .suave { color: var(--suave); font-size: 12px; }
 .vazio { padding: 24px; text-align: center; color: var(--suave); }
 .aviso { margin-top: 12px; padding: 8px 12px; background: var(--amarelo-bg); border-radius: 4px; font-size: 13px; }
+
+.barra i { cursor: pointer; }
+a.num-link { color: var(--azul); cursor: pointer; font-weight: 600; text-decoration: none; }
+a.num-link:hover { text-decoration: underline; }
+.filtro { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px;
+  padding: 8px 12px; background: #e9f2ff; border-radius: 4px; font-size: 13px; }

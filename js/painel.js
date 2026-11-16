@@ -1,8 +1,10 @@
-/* Monitor PMO - painel do board (RF-002 + RF-008). Somente leitura. */
+/* Monitor PMO - painel do board (RF-002 + RF-008). Somente leitura.
+   Clique nos números (KPIs, barra, tabelas) abre a lista de cards correspondente. */
 (function () {
   var M = window.MonitorPMO;
   var t = window.TrelloPowerUp.iframe();
-  var estado = { resumo: null, nomeBoard: '', aba: 'atencao', agora: new Date() };
+  var estado = { resumo: null, nomeBoard: '', aba: 'atencao', filtro: null, agora: new Date() };
+  var NOME_COR = { vermelho: 'Críticos', amarelo: 'Atenção', verde: 'Em dia', cinza: 'Concluídos e pausados' };
 
   function el(tag, cls, txt) {
     var e = document.createElement(tag);
@@ -11,10 +13,20 @@
     return e;
   }
 
+  function filtrarPor(f) {
+    var igual = estado.filtro && JSON.stringify(estado.filtro) === JSON.stringify(f);
+    estado.filtro = igual ? null : f;
+    desenhar();
+  }
+
   function kpi(cor, valor, rotulo) {
-    var d = el('div', 'kpi ' + cor);
+    var sel = estado.filtro && estado.filtro.cor === cor && !estado.filtro.pessoa && estado.filtro.lista === undefined;
+    var d = el('button', 'kpi ' + cor + (sel ? ' sel' : ''));
+    d.type = 'button';
+    d.title = 'Clique para ver os cards';
     d.appendChild(el('b', null, valor));
     d.appendChild(el('span', null, rotulo));
+    d.addEventListener('click', function () { filtrarPor({ cor: cor }); });
     return d;
   }
 
@@ -36,9 +48,18 @@
     return td;
   }
 
-  function abaAtencao(r) {
-    if (!r.atencao.length) return el('div', 'vazio', 'Nenhum card pede atenção. Tudo em dia.');
-    var linhas = r.atencao.map(function (a) {
+  // Número clicável que aplica um filtro; "-" quando zero.
+  function numeroLink(valor, filtro) {
+    if (!valor) return el('span', 'suave', '-');
+    var a = el('a', 'num-link', String(valor));
+    a.title = 'Ver os ' + valor + ' card(s)';
+    a.addEventListener('click', function () { filtrarPor(filtro); });
+    return a;
+  }
+
+  function listaDeCards(itens, vazio) {
+    if (!itens.length) return el('div', 'vazio', vazio);
+    var linhas = itens.map(function (a) {
       var tr = el('tr');
       var link = el('a', 'card', a.name);
       link.addEventListener('click', function () { t.showCard(a.id); });
@@ -47,22 +68,21 @@
       tr.appendChild(celula(c1));
       var tags = el('div');
       a.motivos.forEach(function (m, i) {
-        // os primeiros motivos têm a cor do card; o restante é amarelo
         tags.appendChild(el('span', 'tag ' + (i === 0 ? a.cor : 'amarelo'), m));
       });
       tr.appendChild(celula(tags));
       return tr;
     });
-    return tabela([{ nome: 'Card' }, { nome: 'Motivos' }], linhas);
+    return tabela([{ nome: 'Card' }, { nome: 'Situação' }], linhas);
   }
 
   function abaPessoas(r) {
     var linhas = r.porMembro.map(function (m) {
       var tr = el('tr');
       tr.appendChild(celula(m.nome));
-      tr.appendChild(celula(m.ativos, true));
-      tr.appendChild(celula(m.vermelhos || '-', true));
-      tr.appendChild(celula(m.amarelos || '-', true));
+      tr.appendChild(celula(numeroLink(m.ativos, { pessoa: m.nome }), true));
+      tr.appendChild(celula(numeroLink(m.vermelhos, { pessoa: m.nome, cor: 'vermelho' }), true));
+      tr.appendChild(celula(numeroLink(m.amarelos, { pessoa: m.nome, cor: 'amarelo' }), true));
       return tr;
     });
     return tabela([{ nome: 'Responsável' }, { nome: 'Ativos', num: true },
@@ -73,14 +93,33 @@
     var linhas = r.porLista.map(function (l) {
       var tr = el('tr');
       tr.appendChild(celula(l.nome));
-      tr.appendChild(celula(l.total, true));
-      tr.appendChild(celula(l.vermelho || '-', true));
-      tr.appendChild(celula(l.amarelo || '-', true));
-      tr.appendChild(celula(l.verde || '-', true));
+      tr.appendChild(celula(numeroLink(l.total, { lista: l.nome }), true));
+      tr.appendChild(celula(numeroLink(l.vermelho, { lista: l.nome, cor: 'vermelho' }), true));
+      tr.appendChild(celula(numeroLink(l.amarelo, { lista: l.nome, cor: 'amarelo' }), true));
+      tr.appendChild(celula(numeroLink(l.verde, { lista: l.nome, cor: 'verde' }), true));
       return tr;
     });
     return tabela([{ nome: 'Lista' }, { nome: 'Cards', num: true }, { nome: 'Críticos', num: true },
       { nome: 'Atenção', num: true }, { nome: 'Em dia', num: true }], linhas);
+  }
+
+  function descreverFiltro(f) {
+    var partes = [];
+    if (f.cor) partes.push(NOME_COR[f.cor]);
+    if (f.pessoa) partes.push(f.pessoa);
+    if (f.lista !== undefined && f.lista !== null) partes.push(f.lista);
+    if (!f.cor) partes.unshift('Ativos');
+    return partes.join(' · ');
+  }
+
+  function barraFiltro(qtd) {
+    var b = el('div', 'filtro');
+    b.appendChild(el('span', null, 'Mostrando: ' + descreverFiltro(estado.filtro) + ' (' + qtd + ')'));
+    var x = el('button', null, 'Limpar filtro');
+    x.type = 'button';
+    x.addEventListener('click', function () { estado.filtro = null; desenhar(); });
+    b.appendChild(x);
+    return b;
   }
 
   function desenhar() {
@@ -99,27 +138,43 @@
     ['vermelho', 'amarelo', 'verde'].forEach(function (c) {
       var i = el('i', c);
       i.style.width = (r.ativos ? r.porCor[c] / r.ativos * 100 : 0) + '%';
+      i.title = NOME_COR[c] + ': ' + r.porCor[c];
+      i.addEventListener('click', function () { filtrarPor({ cor: c }); });
       barra.appendChild(i);
     });
     box.appendChild(barra);
 
     var info = [];
-    if (r.semResponsavel) info.push(r.semResponsavel + ' card(s) ativo(s) sem responsável');
-    if (r.padraoMedio !== null) info.push('Aderência ao padrão PMO: ' + r.padraoMedio + '%');
-    if (info.length) box.appendChild(el('div', 'aviso', info.join('  ·  ')));
+    if (r.semResponsavel) {
+      var a = el('a', 'num-link', r.semResponsavel + ' card(s) ativo(s) sem responsável');
+      a.addEventListener('click', function () { filtrarPor({ pessoa: 'Sem responsável' }); });
+      info.push(a);
+    }
+    if (r.padraoMedio !== null) info.push(document.createTextNode('Aderência ao padrão PMO: ' + r.padraoMedio + '%'));
+    if (info.length) {
+      var av = el('div', 'aviso');
+      info.forEach(function (n, i) { if (i) av.appendChild(document.createTextNode('  ·  ')); av.appendChild(n); });
+      box.appendChild(av);
+    }
 
-    var abas = el('div', 'abas');
-    [['atencao', 'Requer atenção (' + r.atencao.length + ')'],
-     ['pessoas', 'Por pessoa'], ['listas', 'Por lista']].forEach(function (a) {
-      var b = el('button', a[0] === estado.aba ? 'ativo' : '', a[1]);
-      b.type = 'button';
-      b.addEventListener('click', function () { estado.aba = a[0]; desenhar(); });
-      abas.appendChild(b);
-    });
-    box.appendChild(abas);
-
-    box.appendChild(estado.aba === 'atencao' ? abaAtencao(r)
-      : estado.aba === 'pessoas' ? abaPessoas(r) : abaListas(r));
+    if (estado.filtro) {
+      var itens = M.filtrar(r, estado.filtro);
+      box.appendChild(barraFiltro(itens.length));
+      box.appendChild(listaDeCards(itens, 'Nenhum card neste filtro.'));
+    } else {
+      var abas = el('div', 'abas');
+      [['atencao', 'Requer atenção (' + r.atencao.length + ')'],
+       ['pessoas', 'Por pessoa'], ['listas', 'Por lista']].forEach(function (x) {
+        var b = el('button', x[0] === estado.aba ? 'ativo' : '', x[1]);
+        b.type = 'button';
+        b.addEventListener('click', function () { estado.aba = x[0]; desenhar(); });
+        abas.appendChild(b);
+      });
+      box.appendChild(abas);
+      box.appendChild(estado.aba === 'atencao'
+        ? listaDeCards(r.atencao, 'Nenhum card pede atenção. Tudo em dia.')
+        : estado.aba === 'pessoas' ? abaPessoas(r) : abaListas(r));
+    }
     t.sizeTo('body').catch(function () {});
   }
 

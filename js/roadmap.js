@@ -98,13 +98,16 @@
       var lista = (ctx.listas || []).filter(function (l) { return l.id === card.idList; })[0];
       var nomeLista = lista ? lista.name : '';
       var s = H.calcularSaude(card, { agora: ctx.agora, camposDef: ctx.camposDef, nomeLista: nomeLista }, config);
-      if (!s || s.cor === 'cinza') return; // fora do semáforo, concluído ou pausado
+      if (!s) return; // fora do semáforo (NOVA DEMANDA)
+      // concluídos nunca entram; pausados só quando pedido (ctx.incluirPausados)
+      if (s.cor === 'cinza' && !(ctx.incluirPausados && s.tipo === 'pausado')) return;
 
       var ini = H.obterCampoData(card, ctx.camposDef, config.campoInicio);
       var fim = H.obterPrazo(card, ctx.camposDef, config.campoPrazo);
       var kIni = ini ? H.chaveDia(ini, tz) : null;
       var kFim = fim ? H.chaveDia(fim, tz) : null;
-      var base = { id: card.id, name: card.name, url: card.url, lista: nomeLista };
+      var base = { id: card.id, name: card.name, url: card.url, lista: nomeLista,
+                   pausado: s.tipo === 'pausado' };
 
       if (kIni === null || kFim === null) {
         base.falta = kIni === null && kFim === null ? 'Início e fim planejados'

@@ -21,6 +21,7 @@
   function resumir(cards, ctx, config) {
     var porCor = { vermelho: 0, amarelo: 0, verde: 0, cinza: 0 };
     var atencao = [];
+    var todos = [];
     var membrosMap = {};
     var listasMap = {};
     var semResponsavel = 0;
@@ -39,13 +40,14 @@
 
       var item = {
         id: card.id, name: card.name, url: card.url, lista: nomeLista,
-        cor: s.cor, rotulo: s.rotulo, motivos: s.motivos,
+        cor: s.cor, tipo: s.tipo || null, rotulo: s.rotulo, motivos: s.motivos,
         diasPrazo: s.diasPrazo, prazo: s.prazo
       };
 
       var ids = card.idMembers || (card.members || []).map(function (m) { return m.id; });
       item.responsaveis = ids.map(function (id) { return nomeDe(ctx.membros, id); });
 
+      todos.push(item);
       if (s.cor === 'vermelho' || s.cor === 'amarelo') atencao.push(item);
 
       var ativo = s.cor !== 'cinza';
@@ -68,12 +70,14 @@
       }
     });
 
-    atencao.sort(function (a, b) {
+    function ordenar(a, b) {
       if (ORDEM_COR[a.cor] !== ORDEM_COR[b.cor]) return ORDEM_COR[a.cor] - ORDEM_COR[b.cor];
       var da = a.diasPrazo === null ? 9999 : a.diasPrazo;
       var db = b.diasPrazo === null ? 9999 : b.diasPrazo;
       return da - db; // mais vencido primeiro
-    });
+    }
+    atencao.sort(ordenar);
+    todos.sort(ordenar);
 
     var porMembro = Object.keys(membrosMap).map(function (k) { return membrosMap[k]; })
       .sort(function (a, b) { return b.ativos - a.ativos || a.nome.localeCompare(b.nome); });
@@ -88,9 +92,28 @@
       semResponsavel: semResponsavel,
       padraoMedio: qtdPadrao ? Math.round(somaPadrao / qtdPadrao) : null,
       atencao: atencao,
+      todos: todos,
       porMembro: porMembro,
       porLista: porLista
     };
+  }
+
+  var SEM_RESPONSAVEL = 'Sem responsável';
+
+  /* Filtro do painel (clique nos números): { cor, pessoa, lista }.
+     Sem "cor", concluídos e pausados ficam de fora (só projetos ativos). */
+  function filtrar(resumo, filtro) {
+    var f = filtro || {};
+    return resumo.todos.filter(function (i) {
+      if (f.cor) { if (i.cor !== f.cor) return false; }
+      else if (i.cor === 'cinza') return false;
+      if (f.lista !== undefined && f.lista !== null && i.lista !== f.lista) return false;
+      if (f.pessoa) {
+        if (f.pessoa === SEM_RESPONSAVEL) { if (i.responsaveis.length) return false; }
+        else if (i.responsaveis.indexOf(f.pessoa) === -1) return false;
+      }
+      return true;
+    });
   }
 
   function dataBR(d) {
@@ -122,5 +145,5 @@
     return linhas.join('\n');
   }
 
-  return { resumir: resumir, textoResumo: textoResumo };
+  return { resumir: resumir, textoResumo: textoResumo, filtrar: filtrar };
 });

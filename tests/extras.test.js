@@ -1,6 +1,6 @@
 const { calcularSaude, calcularRitmo } = require('../js/health.js');
 const { conformidade } = require('../js/padrao.js');
-const { resumir, textoResumo } = require('../js/portfolio.js');
+const { resumir, textoResumo, filtrar } = require('../js/portfolio.js');
 const { config } = require('../js/config.js');
 
 const AGORA = new Date('2026-11-16T15:00:00.000Z');
@@ -184,5 +184,60 @@ describe('portfólio (RF-002 / RF-008)', () => {
   test('texto sem itens de atenção omite a seção', () => {
     const t = textoResumo(resumir([cards[0]], ctx, config), 'X', AGORA);
     expect(t).not.toMatch(/Requer atenção/);
+  });
+});
+
+describe('filtro do painel (clique nos números)', () => {
+  const listas = [{ id: 'l-exec', name: 'Em Execução' }, { id: 'l-new', name: '➕ NOVA DEMANDA — Criar aqui' }, { id: 'l-ok', name: 'Concluídos' }];
+  const membros = [{ id: 'm1', fullName: 'Ana' }, { id: 'm2', fullName: 'Beto' }];
+  const ctx = { agora: AGORA, camposDef: DEF, listas, membros };
+  const fim = (iso) => [...TODOS.filter(i => i.idCustomField !== 'f-fim'), data('f-fim', iso)];
+  const cs = [
+    card({ id: 'a', name: 'Verde', idMembers: ['m1'] }),
+    card({ id: 'b', name: 'Vencido', idMembers: ['m1'], customFieldItems: fim('2026-11-10T12:00:00.000Z') }),
+    card({ id: 'c', name: 'Sem resp', members: [], idMembers: [], customFieldItems: fim('2026-12-31T12:00:00.000Z') }),
+    card({ id: 'd', name: 'Amarelo', idMembers: ['m2'], customFieldItems: fim('2026-11-17T12:00:00.000Z') }),
+    card({ id: 'e', name: 'Feito', idList: 'l-ok', idMembers: ['m1'] }),
+    card({ id: 'p', name: 'Pausado', idMembers: ['m2'], labels: [{ name: 'Pausado' }] }),
+    card({ id: 'f', name: 'Nova', idList: 'l-new', idMembers: [] })
+  ];
+  const r = resumir(cs, ctx, config);
+  const nomes = (l) => l.map(i => i.name);
+
+  test('todos traz os cards avaliados, inclusive cinza, ordenados por gravidade', () => {
+    expect(nomes(r.todos)).toEqual(['Vencido', 'Sem resp', 'Amarelo', 'Verde', 'Feito', 'Pausado']);
+  });
+  test('cada item cinza diz se é concluído ou pausado', () => {
+    expect(r.todos.find(i => i.name === 'Feito').tipo).toBe('concluido');
+    expect(r.todos.find(i => i.name === 'Pausado').tipo).toBe('pausado');
+  });
+  test('filtro por cor', () => {
+    expect(nomes(filtrar(r, { cor: 'vermelho' }))).toEqual(['Vencido', 'Sem resp']);
+    expect(nomes(filtrar(r, { cor: 'cinza' }))).toEqual(['Feito', 'Pausado']);
+    expect(nomes(filtrar(r, { cor: 'verde' }))).toEqual(['Verde']);
+  });
+  test('sem cor, concluídos e pausados ficam de fora', () => {
+    expect(nomes(filtrar(r, {}))).toEqual(['Vencido', 'Sem resp', 'Amarelo', 'Verde']);
+    expect(nomes(filtrar(r))).toEqual(['Vencido', 'Sem resp', 'Amarelo', 'Verde']);
+  });
+  test('filtro por pessoa e por pessoa + cor', () => {
+    expect(nomes(filtrar(r, { pessoa: 'Ana' }))).toEqual(['Vencido', 'Verde']);
+    expect(nomes(filtrar(r, { pessoa: 'Ana', cor: 'vermelho' }))).toEqual(['Vencido']);
+  });
+  test('filtro "Sem responsável"', () => {
+    expect(nomes(filtrar(r, { pessoa: 'Sem responsável' }))).toEqual(['Sem resp']);
+  });
+  test('filtro por lista', () => {
+    expect(nomes(filtrar(r, { lista: 'Em Execução' }))).toEqual(['Vencido', 'Sem resp', 'Amarelo', 'Verde']);
+    expect(nomes(filtrar(r, { lista: 'Concluídos', cor: 'cinza' }))).toEqual(['Feito']);
+    expect(filtrar(r, { lista: 'Inexistente' })).toEqual([]);
+  });
+  test('as contagens dos números batem com o que o clique mostra', () => {
+    expect(filtrar(r, { cor: 'vermelho' }).length).toBe(r.porCor.vermelho);
+    expect(filtrar(r, { cor: 'amarelo' }).length).toBe(r.porCor.amarelo);
+    expect(filtrar(r, { cor: 'verde' }).length).toBe(r.porCor.verde);
+    expect(filtrar(r, { cor: 'cinza' }).length).toBe(r.porCor.cinza);
+    r.porMembro.forEach(m => expect(filtrar(r, { pessoa: m.nome }).length).toBe(m.ativos));
+    r.porLista.forEach(l => expect(filtrar(r, { lista: l.nome }).length).toBe(l.total));
   });
 });
