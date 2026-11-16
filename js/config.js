@@ -45,6 +45,9 @@
         marcosExtras: []
       },
 
+      // "Meu dia": prazos listados na agenda (vencidos + próximos N dias).
+      meuDia: { diasAgenda: 14 },
+
       // Matriz impacto x esforço (campos de lista do board: Alto / Médio / Baixo).
       matriz: {
         campoImpacto: 'Impacto no negócio',

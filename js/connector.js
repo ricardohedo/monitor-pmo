@@ -118,6 +118,18 @@
             fullscreen: true
           });
         }
+      }, {
+        icon: { dark: url('./icons/meudia.svg'), light: url('./icons/meudia.svg') },
+        text: 'Meu dia PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Meu dia: prazos e projetos sob minha responsabilidade',
+            url: url('./meudia.html'),
+            accentColor: '#0c66e4',
+            height: 640,
+            fullscreen: false
+          });
+        }
       }];
     }
   });

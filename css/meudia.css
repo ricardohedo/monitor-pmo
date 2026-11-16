@@ -1,0 +1,13 @@
+.chk { font-size: 13px; color: var(--suave); }
+.chk select { font: inherit; padding: 3px 6px; border: 1px solid var(--borda); border-radius: 3px; background: #fff; color: var(--texto); }
+.frase { margin: 10px 0 0; font-size: 15px; line-height: 1.45; }
+.kpi.est { cursor: default; }
+.kpi.est:hover { filter: none; }
+.proj { border: 1px solid var(--borda); border-left-width: 4px; border-radius: 4px; padding: 8px 10px; margin: 6px 0; }
+.proj.vermelho { border-left-color: #d4453a; } .proj.amarelo { border-left-color: #d9a400; } .proj.verde { border-left-color: #2e9b6a; }
+.proj .linha1 { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.proj .prog { height: 4px; background: var(--cinza-bg); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.proj .prog i { display: block; height: 100%; background: #2e9b6a; }
+.agenda td.dia { white-space: nowrap; font-weight: 600; width: 1%; }
+.agenda td.dia.venc { color: var(--vermelho); }
+.dias { color: var(--suave); font-weight: 400; font-size: 12px; margin-left: 6px; }

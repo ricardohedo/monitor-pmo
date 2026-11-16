@@ -15,7 +15,8 @@
       "js/padrao.js",
       "js/portfolio.js",
       "js/roadmap.js",
-      "js/matriz.js"
+      "js/matriz.js",
+      "js/meudia.js"
     ]
   },
   "devDependencies": {
