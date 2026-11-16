@@ -185,6 +185,7 @@
     qtdMembros: qtdMembros,
     contem: contem,
     diasEntre: diasEntre,
+    chaveDia: chaveDia,
     CORES_TRELLO: CORES_TRELLO
   };
 });

@@ -94,6 +94,18 @@
             fullscreen: false
           });
         }
+      }, {
+        icon: { dark: url('./icons/roadmap.svg'), light: url('./icons/roadmap.svg') },
+        text: 'Roadmap PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Roadmap do portfólio e datas do varejo',
+            url: url('./roadmap.html'),
+            accentColor: '#0c66e4',
+            height: 640,
+            fullscreen: true
+          });
+        }
       }];
     }
   });

@@ -13,7 +13,8 @@
     "collectCoverageFrom": [
       "js/health.js",
       "js/padrao.js",
-      "js/portfolio.js"
+      "js/portfolio.js",
+      "js/roadmap.js"
     ]
   },
   "devDependencies": {

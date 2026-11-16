@@ -34,6 +34,17 @@
         minimoItens: 3
       },
 
+      // Roadmap: janela de tempo e datas do varejo extras (além das padrão:
+      // Carnaval, Páscoa, Dia das Mães, Black Friday, Natal etc.).
+      roadmap: {
+        diasPassadoMin: 15,   // sempre mostra pelo menos 15 dias antes de hoje
+        diasPassadoMax: 120,  // e no máximo 120 dias antes
+        diasFuturoMin: 120,   // sempre mostra pelo menos 120 dias adiante
+        diasFuturoMax: 365,   // e no máximo 1 ano
+        // Exemplo: { nome: 'Inventário geral', mes: 1, dia: 15 }
+        marcosExtras: []
+      },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [
