@@ -1,5 +1,5 @@
-/* Monitor PMO - configuração do semáforo de saúde (RF-001).
-   Ajuste os limites aqui, sem mexer nas regras em health.js. */
+/* Monitor PMO - configuração (semáforo, ritmo e padrão PMO).
+   Ajuste os limites aqui, sem mexer nas regras. */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory());
@@ -12,14 +12,42 @@
       diasPrazoProximo: 3,
       // Fuso usado para decidir "que dia é hoje" (Brasília = -3).
       tzOffsetHoras: -3,
-      // Campo personalizado do board que guarda o prazo. Se vazio no card,
-      // usa o vencimento padrão do Trello.
+      // Campos personalizados do board (padrão PMO).
       campoPrazo: 'Fim planejado',
-      // Listas (trecho do nome) cujos cards não entram no semáforo.
+      campoInicio: 'Início planejado',
+      // Listas (trecho do nome) fora do semáforo / concluídas.
       listasConcluidas: ['Concluídos'],
       listasIgnoradas: ['NOVA DEMANDA'],
       // Etiquetas que pausam o semáforo (o card aparece como cinza).
-      etiquetasPausado: ['Pausado']
+      etiquetasPausado: ['Pausado'],
+
+      // Ritmo: compara % das checklists feitas com % do prazo decorrido.
+      // Só vale para cards nas listas abaixo (projeto já iniciado).
+      ritmo: {
+        ativo: true,
+        listas: ['Em Execução', 'Em Revisão'],
+        // Só avalia depois que X% do prazo passou (evita ruído no começo).
+        minimoDecorrido: 0.2,
+        // Alerta se o progresso estiver abaixo do decorrido por mais que isso.
+        tolerancia: 0.3,
+        // Precisa de pelo menos N itens de checklist para ser confiável.
+        minimoItens: 3
+      },
+
+      // Padrão PMO (card criado do template "NOME DO PROJETO").
+      padrao: {
+        camposObrigatorios: [
+          'Área solicitante', 'Início planejado', 'Fim planejado',
+          'Prioridade', 'Urgente', 'Impacto no negócio', 'Esforço estimado'
+        ],
+        secoesDescricao: ['OBJETIVO DO PROJETO', 'ESCOPO', 'OBSERVACOES'],
+        checklistsPadrao: [
+          'Início do Projeto', 'Planejamento', 'Definição de Responsáveis',
+          'Validação', 'Monitoramento', 'Encerramento'
+        ],
+        prefixoExecucao: 'Execução - ',
+        placeholderExecucao: 'Apague e insira'
+      }
     }
   };
 });
