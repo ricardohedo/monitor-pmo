@@ -164,6 +164,18 @@
             fullscreen: false
           });
         }
+      }, {
+        icon: { dark: url('./icons/tendencia.svg'), light: url('./icons/tendencia.svg') },
+        text: 'Tendência PMO',
+        callback: function (t) {
+          return t.modal({
+            title: 'Tendência da saúde do portfólio',
+            url: url('./tendencia.html'),
+            accentColor: '#0c66e4',
+            height: 520,
+            fullscreen: false
+          });
+        }
       }];
     }
   });

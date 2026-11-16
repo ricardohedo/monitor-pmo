@@ -18,7 +18,8 @@
       "js/matriz.js",
       "js/meudia.js",
       "js/riscos.js",
-      "js/pauta.js"
+      "js/pauta.js",
+      "js/tendencia.js"
     ]
   },
   "devDependencies": {
