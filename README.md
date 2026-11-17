@@ -58,3 +58,6 @@ Todos os limites estão em `js/config.js` (dias parado, prazo próximo, fuso, to
 - `js/portfolio.js` consolidado do board e texto do resumo
 - `js/connector.js` capabilities do Trello; `painel.html` + `js/painel.js` painel do board
 - `tests/` testes Jest
+
+## Alertas (e-mail e Google Chat)
+A rotina `PMO Alertas` roda no Google (Apps Script), lê o Trello só em leitura e avisa só o que mudou. Veja `alertas/LEIA-ME.md`. O arquivo para colar no Google é gerado por `npm run alertas:gerar` (`alertas/dist/PMO-Alertas.gs`). Fase 1: só para o PMO.
