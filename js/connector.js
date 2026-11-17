@@ -69,6 +69,7 @@
     mapa: { texto: 'Mapa pessoa x fase', pagina: './mapa.html', titulo: 'Mapa de calor: pessoa x fase', cheia: false },
     pulso: { texto: 'Pulso do quadro', pagina: './pulso.html', titulo: 'Pulso do quadro: movimento e silêncio', cheia: false },
     prioridades: { texto: 'Prioridades em risco', pagina: './prioridades.html', titulo: 'Prioridades em risco', cheia: false },
+    previa: { texto: 'Prévia dos alertas', pagina: './previa.html', titulo: 'Prévia dos alertas (o que a rotina do Google mandaria)', cheia: false },
     diretoria: { texto: 'Painel da diretoria', pagina: './diretoria.html', titulo: 'Painel da diretoria', cheia: true }
   };
 
@@ -78,7 +79,7 @@
     planejamento: { badges: false, rest: true, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
       itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'funil', 'mapa', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
-      itens: ['diretoria', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
+      itens: ['diretoria', 'previa', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
     // Estado antes da separação (conector sem <meta name="pacote">).
     tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
       menu: { texto: 'Mais visões PMO', icone: 'atuar',

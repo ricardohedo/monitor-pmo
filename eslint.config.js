@@ -12,6 +12,19 @@ module.exports = [
     }
   },
   {
+    files: ['alertas/gas.js'],
+    languageOptions: {
+      ecmaVersion: 2018,
+      sourceType: 'script',
+      globals: { PropertiesService: 'readonly', UrlFetchApp: 'readonly', MailApp: 'readonly', Logger: 'readonly',
+        ScriptApp: 'readonly', MonitorPMO: 'readonly' }
+    }
+  },
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: { ecmaVersion: 2022, sourceType: 'commonjs', globals: { ...globals.node } }
+  },
+  {
     files: ['tests/**/*.js', 'eslint.config.js'],
     languageOptions: {
       ecmaVersion: 2022,
@@ -19,5 +32,5 @@ module.exports = [
       globals: { ...globals.node, ...globals.jest }
     }
   },
-  { ignores: ['node_modules/', 'coverage/', '.playwright-mcp/'] }
+  { ignores: ['node_modules/', 'coverage/', '.playwright-mcp/', 'alertas/dist/'] }
 ];

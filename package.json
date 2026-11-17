@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --coverage",
     "lint": "eslint . --max-warnings 0",
-    "check": "npm run lint && npm test"
+    "alertas:gerar": "node scripts/gerar-alertas.js",
+    "check": "npm run alertas:gerar && npm run lint && npm test"
   },
   "jest": {
     "testEnvironment": "node",
@@ -43,7 +44,8 @@
       "js/mapa.js",
       "js/pulso.js",
       "js/prioridades.js",
-      "js/diretoria.js"
+      "js/diretoria.js",
+      "js/alertas.js"
     ]
   },
   "devDependencies": {

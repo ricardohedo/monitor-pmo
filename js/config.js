@@ -194,6 +194,15 @@
       // (identifica o Power-Up PMO Planejamento); o token é de cada pessoa e fica guardado pelo próprio Trello.
       restApi: { appKey: '89b561f64915d85e23e1ab022f7fc1f8', appName: 'PMO Planejamento', escopo: 'read', expiracao: '30days' },
 
+      // Alertas (rotina agendada no Google; só leitura do Trello; fase 1 = só para o Ricardo).
+      alertas: {
+        varejoDias: [10, 7, 3, 1],  // avisa quando faltarem exatamente N dias para uma data forte
+        novosDias: 2,               // projeto criado há até N dias e incompleto gera aviso
+        maxLinhas: 8,               // linhas por alerta (o resto vira "e mais N")
+        retencaoDias: 30,           // quanto tempo lembrar que um aviso já foi enviado
+        limiteChat: 3500            // tamanho máximo da mensagem no Chat
+      },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [
