@@ -43,7 +43,10 @@
     { texto: 'Radar: o que vai virar alerta', pagina: './radar.html', titulo: 'Radar: o que vai virar alerta', cheia: false },
     { texto: 'Carga da equipe', pagina: './carga.html', titulo: 'Carga da equipe', cheia: false },
     { texto: 'Saneamento do cadastro', pagina: './cadastro.html', titulo: 'Saneamento do cadastro', cheia: false },
-    { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false }
+    { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false },
+    { texto: 'Calendário do varejo', pagina: './varejo.html', titulo: 'Calendário do varejo: dias úteis e projetos em risco', cheia: false },
+    { texto: 'Por área solicitante', pagina: './area.html', titulo: 'Projetos por área solicitante', cheia: false },
+    { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false }
   ];
 
   function abrirVisao(v) {

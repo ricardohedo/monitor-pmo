@@ -23,6 +23,14 @@
     return m ? (m.fullName || m.username || id) : id;
   }
 
+  // Texto de um campo personalizado: tipo lista (opção escolhida) ou tipo texto.
+  function valorCampo(card, camposDef, nome) {
+    var v = H.valorLista(card, camposDef, nome);
+    if (v) return v;
+    var it = H.itemDoCampo(card, H.achaCampo(camposDef, nome));
+    return it && it.value && it.value.text ? it.value.text : null;
+  }
+
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
 
   /* montarItens(cards, ctx, config)
@@ -54,7 +62,11 @@
         impacto: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoImpacto)),
         esforco: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoEsforco)),
         parado: card.dateLastActivity ? H.diasEntre(ctx.agora, card.dateLastActivity, tz) : null,
-        faltando: c.faltando, aderencia: c.percent
+        faltando: c.faltando, aderencia: c.percent,
+        etiquetas: (card.labels || []).map(function (l) { return norm(l.name); }),
+        area: valorCampo(card, ctx.camposDef, config.campoArea),
+        anexos: b.attachments === undefined ? null : b.attachments,
+        comentarios: b.comments === undefined ? null : b.comments
       });
     });
     return out;

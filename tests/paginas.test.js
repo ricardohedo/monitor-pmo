@@ -4,7 +4,7 @@ const path = require('path');
 // Os scripts de painel.html e roadmap.html mexem em elementos do <body>
 // (checkboxes, botões). Sem "defer" rodam antes de a página existir e falham.
 describe('páginas do Power-Up carregam os scripts locais com defer', () => {
-  ['painel.html', 'roadmap.html', 'matriz.html', 'meudia.html', 'riscos.html', 'pauta.html', 'tendencia.html', 'carga.html', 'prazos.html', 'atuar.html', 'radar.html', 'conquistas.html', 'cadastro.html'].forEach((arquivo) => {
+  ['painel.html', 'roadmap.html', 'matriz.html', 'meudia.html', 'riscos.html', 'pauta.html', 'tendencia.html', 'carga.html', 'prazos.html', 'atuar.html', 'radar.html', 'conquistas.html', 'cadastro.html', 'varejo.html', 'area.html', 'higiene.html'].forEach((arquivo) => {
     test(arquivo, () => {
       const html = fs.readFileSync(path.join(__dirname, '..', arquivo), 'utf8');
       const locais = html.match(/<script[^>]*src="\.\/js\/[^"]+"[^>]*>/g) || [];
@@ -14,7 +14,7 @@ describe('páginas do Power-Up carregam os scripts locais com defer', () => {
   });
 
   test('todo getElementById usado nos scripts de tela existe na página', () => {
-    [['painel.html', 'js/painel.js'], ['roadmap.html', 'js/roadmapview.js'], ['matriz.html', 'js/matrizview.js'], ['meudia.html', 'js/meudiaview.js'], ['riscos.html', 'js/riscosview.js'], ['pauta.html', 'js/pautaview.js'], ['tendencia.html', 'js/tendenciaview.js'], ['carga.html', 'js/cargaview.js'], ['prazos.html', 'js/prazosview.js'], ['atuar.html', 'js/atuarview.js'], ['radar.html', 'js/radarview.js'], ['conquistas.html', 'js/conquistasview.js'], ['cadastro.html', 'js/cadastroview.js']].forEach(([html, js]) => {
+    [['painel.html', 'js/painel.js'], ['roadmap.html', 'js/roadmapview.js'], ['matriz.html', 'js/matrizview.js'], ['meudia.html', 'js/meudiaview.js'], ['riscos.html', 'js/riscosview.js'], ['pauta.html', 'js/pautaview.js'], ['tendencia.html', 'js/tendenciaview.js'], ['carga.html', 'js/cargaview.js'], ['prazos.html', 'js/prazosview.js'], ['atuar.html', 'js/atuarview.js'], ['radar.html', 'js/radarview.js'], ['conquistas.html', 'js/conquistasview.js'], ['cadastro.html', 'js/cadastroview.js'], ['varejo.html', 'js/varejoview.js'], ['area.html', 'js/areaview.js'], ['higiene.html', 'js/higieneview.js']].forEach(([html, js]) => {
       const pagina = fs.readFileSync(path.join(__dirname, '..', html), 'utf8');
       const codigo = fs.readFileSync(path.join(__dirname, '..', js), 'utf8');
       const ids = new Set([...codigo.matchAll(/getElementById\('([^']+)'\)/g)].map((m) => m[1]));

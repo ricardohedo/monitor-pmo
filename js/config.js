@@ -15,6 +15,7 @@
       // Campos personalizados do board (padrão PMO).
       campoPrazo: 'Fim planejado',
       campoInicio: 'Início planejado',
+      campoArea: 'Área solicitante',
       // Listas (trecho do nome) fora do semáforo / concluídas.
       listasConcluidas: ['Concluídos'],
       listasIgnoradas: ['NOVA DEMANDA'],
@@ -126,6 +127,22 @@
 
       // Conquistas: entregas recentes e reta final.
       conquistas: { dias: 30, quasePronto: 0.9, minimoItens: 3, limite: 8 },
+
+      // Calendário do varejo: olha as datas fortes dos próximos N dias.
+      varejo: {
+        dias: 120,
+        avisoDiasUteis: 25,   // a partir daqui a data é marcada como "perto"
+        // Feriados nacionais (dias úteis = sem sábado, domingo e estes).
+        feriados: ['2026-11-20', '2026-12-25', '2027-01-01', '2027-03-26', '2027-04-21', '2027-05-01',
+          '2027-05-27', '2027-09-07', '2027-10-12', '2027-11-02', '2027-11-15', '2027-11-20', '2027-12-25']
+      },
+
+      // Higiene do quadro: evidência de entrega e comentários.
+      higiene: {
+        diasEvidencia: 30,     // entregas dos últimos N dias precisam de anexo
+        minimoAnexos: 1,
+        listaRevisao: ['Em Revisão']
+      },
 
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {

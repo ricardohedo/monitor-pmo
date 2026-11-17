@@ -26,7 +26,10 @@
       "js/atuar.js",
       "js/radar.js",
       "js/conquistas.js",
-      "js/cadastro.js"
+      "js/cadastro.js",
+      "js/varejo.js",
+      "js/area.js",
+      "js/higiene.js"
     ]
   },
   "devDependencies": {
