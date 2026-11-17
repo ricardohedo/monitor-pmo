@@ -193,6 +193,11 @@ describe('montarRadar', () => {
     expect(r.total).toBe(3);
     expect(r.viramCriticos).toBe(2);
   });
+  test('card já crítico que fica parado não gera evento', () => {
+    const r = montarRadar(itens([r0('SemDono', { idMembers: [], dateLastActivity: dia(-6) })]), config);
+    expect(r.grupos).toEqual([]);
+    expect(r.total).toBe(0);
+  });
   test('amarelo não repete aviso de atenção; vermelho não vira crítico de novo', () => {
     const r = montarRadar(itens([r0('Amar', { customFieldItems: [fim(dia(2))] }), r0('Verm', { customFieldItems: [fim(dia(-4))] })]), config);
     expect(r.grupos.map(g => g.linhas.map(l => l.tipo))).toEqual([['critico']]);

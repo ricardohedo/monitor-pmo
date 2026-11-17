@@ -18,7 +18,8 @@
         if (i.cor !== 'vermelho') add(i.diasPrazo + 1, 'critico', 'Prazo vence e o projeto fica crítico (vencido)');
         if (i.cor === 'verde') add(i.diasPrazo - config.diasPrazoProximo, 'atencao', 'Entra na janela de prazo próximo (atenção)');
       }
-      if (i.parado !== null && i.parado <= config.diasParado) {
+      // Só avisa quando a cor realmente mudaria: card já amarelo/vermelho não muda por ficar parado.
+      if (i.cor === 'verde' && i.parado !== null && i.parado <= config.diasParado) {
         add(config.diasParado + 1 - i.parado, 'parado', 'Fica parado há mais de ' + config.diasParado + ' dias sem movimentação');
       }
     });
