@@ -16,6 +16,7 @@
 | Data forte do varejo | Faltando 10, 7, 3 e 1 dia (Black Friday, Natal, Páscoa...) com os projetos em risco |
 | Projeto novo incompleto | Criado há até 2 dias e faltando campos do padrão PMO |
 | Item de checklist vencido | Projeto que passou a ter item com prazo vencido |
+| Projeto subiu para a diretoria | Passou de um limite do escalonamento (atraso de 30+ dias, prioridade alta atrasada, urgente e crítico, ou em risco para a data forte) |
 
 Limites (dias do varejo, quantas linhas por aviso etc.) ficam em `config.alertas`, em `js/config.js`.
 

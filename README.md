@@ -41,6 +41,11 @@ Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/conf
 | Pulso do quadro | Movimento recente x silêncio, por faixa de tempo e por pessoa |
 | Prioridades em risco | Projetos de prioridade máxima/alta (e urgentes) fora do verde |
 | Painel da diretoria | Números grandes e semáforo geral para projetar em reunião (atualiza sozinho) |
+| Ficha do projeto | Tudo de um projeto em uma página: situação, prazo, cadastro que falta, riscos e o que fazer agora (Guia do gestor) |
+| Regras e como corrigir | As regras com os números reais da configuração e quais projetos caem em cada uma (Guia do gestor) |
+| Boletim do gestor | Nota de 0 a 100 por gestor com fórmula aberta e a lista do que derruba a nota (Guia do gestor) |
+| Escalonamento | Quando um problema sobe do gestor para o PMO e para a diretoria, por critérios objetivos; ficha de escalonamento |
+| Projetos melancia | Verdes por fora com problemas escondidos por dentro |
 | Triagem de demandas | O que falta para uma demanda nova virar projeto pronto para priorizar |
 
 Base comum: `js/itens.js` (monta os itens do board) e `js/comum.js` (telas). Cada visão tem um módulo puro testado (`js/<nome>.js`) e uma tela (`js/<nome>view.js` + `<nome>.html`).
