@@ -230,10 +230,17 @@ describe('montarCadastro', () => {
     expect(r.gestores[0].texto).toContain('Ana, faltam dados');
     expect(r.gestores[0].texto).toContain('- Incompleto:');
     expect(r.gestores[1].texto).toContain('PMO precisa atribuir');
-    expect(r.campos.find(c => c.campo === 'Responsável').qtd).toBe(1);
+    expect(r.campos.find(c => c.campo === 'Responsável definido').qtd).toBe(1);
     expect(r.total).toBe(2);
     expect(r.completos).toBe(0);
     expect(r.texto).toContain('\n\n');
+  });
+  test('encurta a descrição e não duplica Responsável', () => {
+    const r = montarCadastro(itens([card('Orfao', { idMembers: [] })]));
+    const falta = r.gestores[0].projetos[0].falta;
+    expect(falta.filter(f => f.indexOf('Responsável') === 0).length).toBeLessThanOrEqual(1);
+    expect(falta.some(f => f.indexOf('Descrição: ') === 0)).toBe(true);
+    expect(falta.some(f => f.indexOf('Campo "') === 0)).toBe(false);
   });
   test('ignora concluídos; portfólio sem pendência', () => {
     const r = montarCadastro(itens([card('C', { idList: 'l-ok' })]));

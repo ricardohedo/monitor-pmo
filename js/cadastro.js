@@ -12,7 +12,9 @@
     return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
   }
 
-  function limpar(txt) { return txt.replace(/^Campo "(.*)"$/, '$1'); }
+  function limpar(txt) {
+    return txt.replace(/^Campo "(.*)"$/, '$1').replace(/^Descrição com (.*) preenchidos$/, 'Descrição: $1');
+  }
 
   /* montarCadastro(itens) -> { gestores, campos, completos, total, aderenciaMedia } */
   function montarCadastro(itens) {
@@ -24,7 +26,7 @@
       var dono = i.responsaveis[0] || SEM;
       var g = porGestor[dono] || (porGestor[dono] = { nome: dono, semDono: dono === SEM, projetos: [] });
       var falta = i.faltando.map(limpar);
-      if (!i.ids.length) falta.unshift('Responsável');
+      if (!i.ids.length && !falta.some(function (f) { return f.indexOf('Responsável') === 0; })) falta.unshift('Responsável');
       g.projetos.push({ id: i.id, name: i.name, lista: i.lista, falta: falta });
       falta.forEach(function (f) { porCampo[f] = (porCampo[f] || 0) + 1; });
     });
