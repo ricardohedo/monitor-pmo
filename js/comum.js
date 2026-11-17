@@ -23,6 +23,10 @@
     return 'em ' + d + 'd';
   }
 
+  function prazoTxt(d) {
+    return d === null || d === undefined ? 'sem prazo' : 'prazo ' + textoDias(d);
+  }
+
   function linkCard(t, i) {
     var a = el('a', 'card', i.name);
     a.addEventListener('click', function () { t.showCard(i.id); });
@@ -67,6 +71,6 @@
     document.getElementById('conteudo').textContent = 'Erro ao carregar: ' + (e && e.message ? e.message : e);
   }
 
-  M.ui = { el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
+  M.ui = { prazoTxt: prazoTxt, el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
     copiar: copiar, tag: tag, lerItens: lerItens, erro: erro };
 })();

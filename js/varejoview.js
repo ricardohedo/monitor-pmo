@@ -11,7 +11,7 @@
   function linha(box, i) {
     var p = U.el('div', 'proj ' + (i.motivos.length || i.cor === 'vermelho' ? 'vermelho' : i.cor === 'amarelo' ? 'amarelo' : 'verde'));
     p.appendChild(U.linkCard(t, i));
-    p.appendChild(U.el('span', 'suave', '  ' + i.lista + ' · prazo ' + U.textoDias(i.diasPrazo)));
+    p.appendChild(U.el('span', 'suave', '  ' + i.lista + ' · ' + U.prazoTxt(i.diasPrazo)));
     var tags = U.el('div');
     i.motivos.forEach(function (m) { tags.appendChild(U.tag('vermelho', m)); });
     if (!i.motivos.length && i.cor !== 'verde') tags.appendChild(U.tag(i.cor, 'saúde: ' + i.cor));
@@ -34,6 +34,12 @@
         box.appendChild(topo);
         if (!d.ligados.length && !d.ate.length) {
           box.appendChild(U.el('p', 'suave', 'Nenhum projeto ligado (etiqueta "' + d.nome + '") nem com prazo até a data.'));
+          return;
+        }
+        if (!d.perto && !d.ligados.length) {
+          box.appendChild(U.el('p', 'suave', d.ate.length + (d.ate.length === 1 ? ' projeto com prazo' : ' projetos com prazo') +
+            ' até a data' + (d.emRisco ? ', ' + d.emRisco + ' fora do verde' : ' (todos em dia)') + '. Detalhe aparece quando faltarem ' +
+            M.config.varejo.avisoDiasUteis + ' dias úteis ou se houver projeto com a etiqueta.'));
           return;
         }
         if (d.ligados.length) { box.appendChild(U.el('p', 'suave', 'Ligados pela etiqueta:')); d.ligados.forEach(function (i) { linha(box, i); }); }

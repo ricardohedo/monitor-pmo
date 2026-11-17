@@ -34,7 +34,7 @@
         a.piores.forEach(function (p) {
           var li = U.el('p');
           li.appendChild(U.linkCard(t, p));
-          li.appendChild(U.el('span', 'suave', ' - prazo ' + U.textoDias(p.diasPrazo)));
+          li.appendChild(U.el('span', 'suave', ' - ' + U.prazoTxt(p.diasPrazo)));
           box.appendChild(li);
         });
       });
