@@ -13,7 +13,8 @@
       document.getElementById('resumo').textContent = r.gestores.length + ' gestor(es) avaliados' + (r.semDono ? ' · ' + r.semDono + ' projeto(s) sem responsável não pontuam para ninguém' : '') + '.';
 
       var f = U.el('div', 'dica');
-      f.textContent = 'Como a nota é calculada (igual para todos): ' + r.gestores.length + ' dimensões somam 100 pontos. ' +
+      var nDim = r.gestores[0] ? r.gestores[0].dimensoes.length : Object.keys(r.pesos).length;
+      f.textContent = 'Como a nota é calculada (igual para todos): ' + nDim + ' dimensões somam 100 pontos. ' +
         (r.gestores[0] ? r.gestores[0].dimensoes.map(function (d) { return d.rotulo + ' ' + d.peso; }).join(' · ') : '') +
         '. Faixas: no padrão a partir de ' + r.faixas.noPadrao + ', atenção a partir de ' + r.faixas.atencao + ', abaixo disso crítico.';
       box.appendChild(f);
