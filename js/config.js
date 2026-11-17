@@ -178,6 +178,18 @@
       // Lista de projetos: o que aparece e em que ordem de prioridade.
       lista: { ordemPrioridade: ['maxima', 'alta', 'media', 'baixa'] },
 
+      // Funil por lista: faixas de dias sem movimento (limites superiores de cada faixa).
+      funil: { faixas: [3, 7, 14, 30] },
+
+      // Pulso do quadro: o que conta como "movimentado recentemente".
+      pulso: { diasMovimento: 7 },
+
+      // Prioridades em risco: níveis de prioridade que o PMO precisa defender.
+      prioridades: { niveis: ['maxima', 'alta'], rotulos: { maxima: 'Máxima', alta: 'Alta' } },
+
+      // Painel da diretoria: % de projetos em dia para o semáforo geral.
+      diretoria: { verdeMin: 70, amareloMin: 40 },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

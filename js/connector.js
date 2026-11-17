@@ -64,16 +64,21 @@
     triagem: { texto: 'Triagem de demandas', pagina: './triagem.html', titulo: 'Triagem de demandas novas', cheia: false },
     checklists: { texto: 'Checklists', pagina: './checklists.html', titulo: 'Acompanhamento de checklists', cheia: false },
     novos: { texto: 'Novos projetos', pagina: './novos.html', titulo: 'Novos projetos: criados do jeito certo?', cheia: false },
-    lista: { texto: 'Lista de projetos', pagina: './lista.html', titulo: 'Lista de projetos', cheia: true }
+    lista: { texto: 'Lista de projetos', pagina: './lista.html', titulo: 'Lista de projetos', cheia: true },
+    funil: { texto: 'Funil por lista', pagina: './funil.html', titulo: 'Funil: onde o fluxo trava', cheia: false },
+    mapa: { texto: 'Mapa pessoa x fase', pagina: './mapa.html', titulo: 'Mapa de calor: pessoa x fase', cheia: false },
+    pulso: { texto: 'Pulso do quadro', pagina: './pulso.html', titulo: 'Pulso do quadro: movimento e silêncio', cheia: false },
+    prioridades: { texto: 'Prioridades em risco', pagina: './prioridades.html', titulo: 'Prioridades em risco', cheia: false },
+    diretoria: { texto: 'Painel da diretoria', pagina: './diretoria.html', titulo: 'Painel da diretoria', cheia: true }
   };
 
   // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
   var PACOTES = {
     base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
     planejamento: { badges: false, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
-      itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'varejo', 'capacidade', 'radar'] } },
+      itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'funil', 'mapa', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
-      itens: ['riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
+      itens: ['diretoria', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
     // Estado antes da separação (conector sem <meta name="pacote">).
     tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
       menu: { texto: 'Mais visões PMO', icone: 'atuar',

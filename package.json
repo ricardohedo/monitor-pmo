@@ -38,7 +38,12 @@
       "js/triagem.js",
       "js/checklists.js",
       "js/novos.js",
-      "js/lista.js"
+      "js/lista.js",
+      "js/funil.js",
+      "js/mapa.js",
+      "js/pulso.js",
+      "js/prioridades.js",
+      "js/diretoria.js"
     ]
   },
   "devDependencies": {
