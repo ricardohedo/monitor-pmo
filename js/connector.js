@@ -36,28 +36,83 @@
     return p(x.getUTCDate()) + '/' + p(x.getUTCMonth() + 1) + '/' + x.getUTCFullYear();
   }
 
-  // Visões extras: ficam num único botão ("Mais visões PMO") para não lotar o cabeçalho do board.
-  var VISOES = [
-    { texto: 'Minhas ações: onde atuar', pagina: './atuar.html', titulo: 'Minhas ações: onde atuar primeiro', cheia: false },
-    { texto: 'Prazos e linha do tempo', pagina: './prazos.html', titulo: 'Prazos: atrasados e a vencer', cheia: false },
-    { texto: 'Radar: o que vai virar alerta', pagina: './radar.html', titulo: 'Radar: o que vai virar alerta', cheia: false },
-    { texto: 'Carga da equipe', pagina: './carga.html', titulo: 'Carga da equipe', cheia: false },
-    { texto: 'Saneamento do cadastro', pagina: './cadastro.html', titulo: 'Saneamento do cadastro', cheia: false },
-    { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false },
-    { texto: 'Calendário do varejo', pagina: './varejo.html', titulo: 'Calendário do varejo: dias úteis e projetos em risco', cheia: false },
-    { texto: 'Por área solicitante', pagina: './area.html', titulo: 'Projetos por área solicitante', cheia: false },
-    { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false },
-    { texto: 'Metas do PMO', pagina: './metas.html', titulo: 'Metas do PMO', cheia: false },
-    { texto: 'Relatório executivo', pagina: './relatorio.html', titulo: 'Relatório executivo do portfólio', cheia: false }
-  ];
 
-  function abrirVisao(v) {
+  // Catálogo de visões e pacotes. O mesmo código serve os três Power-Ups; cada
+  // conector HTML diz qual pacote usa (<meta name="pacote" content="...">).
+  var VISOES = {
+    monitor: { texto: 'Monitor PMO', pagina: './painel.html', titulo: 'Monitor PMO - Saúde do portfólio', cheia: false },
+    roadmap: { texto: 'Roadmap PMO', pagina: './roadmap.html', titulo: 'Roadmap do portfólio e datas do varejo', cheia: true },
+    matriz: { texto: 'Matriz PMO', pagina: './matriz.html', titulo: 'Matriz impacto × esforço', cheia: true },
+    meudia: { texto: 'Meu dia PMO', pagina: './meudia.html', titulo: 'Meu dia: prazos e projetos sob minha responsabilidade', cheia: false },
+    riscos: { texto: 'Riscos e premissas', pagina: './riscos.html', titulo: 'Riscos e premissas dos projetos', cheia: false },
+    pauta: { texto: 'Pauta PMO', pagina: './pauta.html', titulo: 'Pauta da reunião semanal', cheia: false },
+    tendencia: { texto: 'Tendência PMO', pagina: './tendencia.html', titulo: 'Tendência da saúde do portfólio', cheia: false, altura: 520 },
+    atuar: { texto: 'Minhas ações', pagina: './atuar.html', titulo: 'Minhas ações: onde atuar primeiro', cheia: false },
+    prazos: { texto: 'Prazos e linha do tempo', pagina: './prazos.html', titulo: 'Prazos: atrasados e a vencer', cheia: false },
+    radar: { texto: 'Radar: o que vai virar alerta', pagina: './radar.html', titulo: 'Radar: o que vai virar alerta', cheia: false },
+    carga: { texto: 'Carga da equipe', pagina: './carga.html', titulo: 'Carga da equipe', cheia: false },
+    cadastro: { texto: 'Saneamento do cadastro', pagina: './cadastro.html', titulo: 'Saneamento do cadastro', cheia: false },
+    conquistas: { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false },
+    varejo: { texto: 'Calendário do varejo', pagina: './varejo.html', titulo: 'Calendário do varejo: dias úteis e projetos em risco', cheia: false },
+    area: { texto: 'Por área solicitante', pagina: './area.html', titulo: 'Projetos por área solicitante', cheia: false },
+    higiene: { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false },
+    metas: { texto: 'Metas do PMO', pagina: './metas.html', titulo: 'Metas do PMO', cheia: false },
+    relatorio: { texto: 'Relatório executivo', pagina: './relatorio.html', titulo: 'Relatório executivo do portfólio', cheia: false }
+  };
+
+  // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
+  var PACOTES = {
+    base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
+    planejamento: { badges: false, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
+      itens: ['roadmap', 'matriz', 'prazos', 'varejo', 'radar'] } },
+    governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
+      itens: ['riscos', 'cadastro', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'relatorio'] } },
+    // Estado antes da separação (conector sem <meta name="pacote">).
+    tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
+      menu: { texto: 'Mais visões PMO', icone: 'atuar',
+        itens: ['atuar', 'prazos', 'radar', 'carga', 'cadastro', 'conquistas', 'varejo', 'area', 'higiene', 'metas', 'relatorio'] } }
+  };
+
+  function nomePacote() {
+    var m = document.querySelector('meta[name="pacote"]');
+    var n = m && m.getAttribute('content');
+    return PACOTES[n] ? n : 'tudo';
+  }
+
+  function icone(n) {
+    var u = url('./icons/' + n + '.svg');
+    return { dark: u, light: u };
+  }
+
+  function abrirVisao(chave) {
+    var v = VISOES[chave];
     return function (t) {
-      return t.modal({ title: v.titulo, url: url(v.pagina), accentColor: '#0c66e4', height: 640, fullscreen: v.cheia });
+      return t.modal({ title: v.titulo, url: url(v.pagina), accentColor: '#0c66e4',
+        height: v.altura || 640, fullscreen: v.cheia });
     };
   }
 
-  window.TrelloPowerUp.initialize({
+  function botoesDoPacote(pacote) {
+    var lista = pacote.botoes.map(function (k) {
+      return { icon: icone(k === 'monitor' ? 'monitor' : k), text: VISOES[k].texto, callback: abrirVisao(k) };
+    });
+    if (pacote.menu) {
+      lista.push({
+        icon: icone(pacote.menu.icone),
+        text: pacote.menu.texto,
+        callback: function (t) {
+          return t.popup({
+            title: pacote.menu.texto,
+            items: pacote.menu.itens.map(function (k) { return { text: VISOES[k].texto, callback: abrirVisao(k) }; })
+          });
+        }
+      });
+    }
+    return lista;
+  }
+
+  var pacote = PACOTES[nomePacote()];
+  var capacidades = {
     // RF-001: semáforo na frente do card
     'card-badges': function (t) {
       return dadosDoCard(t).then(function (d) {
@@ -111,102 +166,13 @@
       });
     },
 
-    // RF-002 + RF-008: painel do board
-    'board-buttons': function () {
-      return [{
-        icon: { dark: url('./icons/monitor.svg'), light: url('./icons/monitor.svg') },
-        text: 'Monitor PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Monitor PMO - Saúde do portfólio',
-            url: url('./painel.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: false
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/roadmap.svg'), light: url('./icons/roadmap.svg') },
-        text: 'Roadmap PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Roadmap do portfólio e datas do varejo',
-            url: url('./roadmap.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: true
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/matriz.svg'), light: url('./icons/matriz.svg') },
-        text: 'Matriz PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Matriz impacto × esforço',
-            url: url('./matriz.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: true
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/meudia.svg'), light: url('./icons/meudia.svg') },
-        text: 'Meu dia PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Meu dia: prazos e projetos sob minha responsabilidade',
-            url: url('./meudia.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: false
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/riscos.svg'), light: url('./icons/riscos.svg') },
-        text: 'Riscos PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Riscos e premissas dos projetos',
-            url: url('./riscos.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: false
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/pauta.svg'), light: url('./icons/pauta.svg') },
-        text: 'Pauta PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Pauta da reunião semanal',
-            url: url('./pauta.html'),
-            accentColor: '#0c66e4',
-            height: 640,
-            fullscreen: false
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/tendencia.svg'), light: url('./icons/tendencia.svg') },
-        text: 'Tendência PMO',
-        callback: function (t) {
-          return t.modal({
-            title: 'Tendência da saúde do portfólio',
-            url: url('./tendencia.html'),
-            accentColor: '#0c66e4',
-            height: 520,
-            fullscreen: false
-          });
-        }
-      }, {
-        icon: { dark: url('./icons/atuar.svg'), light: url('./icons/atuar.svg') },
-        text: 'Mais visões PMO',
-        callback: function (t) {
-          return t.popup({
-            title: 'Mais visões do PMO',
-            items: VISOES.map(function (v) { return { text: v.texto, callback: abrirVisao(v) }; })
-          });
-        }
-      }];
-    }
-  });
+    // RF-002 + RF-008: painel do board,
+    'board-buttons': function () { return botoesDoPacote(pacote); }
+  };
+
+  if (!pacote.badges) {
+    delete capacidades['card-badges'];
+    delete capacidades['card-detail-badges'];
+  }
+  window.TrelloPowerUp.initialize(capacidades);
 })();
