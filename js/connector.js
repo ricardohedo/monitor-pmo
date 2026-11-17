@@ -36,6 +36,22 @@
     return p(x.getUTCDate()) + '/' + p(x.getUTCMonth() + 1) + '/' + x.getUTCFullYear();
   }
 
+  // Visões extras: ficam num único botão ("Mais visões PMO") para não lotar o cabeçalho do board.
+  var VISOES = [
+    { texto: 'Minhas ações: onde atuar', pagina: './atuar.html', titulo: 'Minhas ações: onde atuar primeiro', cheia: false },
+    { texto: 'Prazos e linha do tempo', pagina: './prazos.html', titulo: 'Prazos: atrasados e a vencer', cheia: false },
+    { texto: 'Radar: o que vai virar alerta', pagina: './radar.html', titulo: 'Radar: o que vai virar alerta', cheia: false },
+    { texto: 'Carga da equipe', pagina: './carga.html', titulo: 'Carga da equipe', cheia: false },
+    { texto: 'Saneamento do cadastro', pagina: './cadastro.html', titulo: 'Saneamento do cadastro', cheia: false },
+    { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false }
+  ];
+
+  function abrirVisao(v) {
+    return function (t) {
+      return t.modal({ title: v.titulo, url: url(v.pagina), accentColor: '#0c66e4', height: 640, fullscreen: v.cheia });
+    };
+  }
+
   window.TrelloPowerUp.initialize({
     // RF-001: semáforo na frente do card
     'card-badges': function (t) {
@@ -174,6 +190,15 @@
             accentColor: '#0c66e4',
             height: 520,
             fullscreen: false
+          });
+        }
+      }, {
+        icon: { dark: url('./icons/atuar.svg'), light: url('./icons/atuar.svg') },
+        text: 'Mais visões PMO',
+        callback: function (t) {
+          return t.popup({
+            title: 'Mais visões do PMO',
+            items: VISOES.map(function (v) { return { text: v.texto, callback: abrirVisao(v) }; })
           });
         }
       }];

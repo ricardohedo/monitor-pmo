@@ -1,0 +1,16 @@
+.resumo { font-weight: 600; margin: 10px 0 0; }
+.rodape { margin-top: 16px; color: var(--suave); font-size: 12px; }
+.nada { margin-top: 12px; padding: 10px 12px; background: var(--verde-bg); border-radius: 4px; }
+.dica { margin-top: 8px; padding: 8px 12px; background: #e9f2ff; border-radius: 4px; font-size: 13px; }
+.proj { border: 1px solid var(--borda); border-left-width: 4px; border-radius: 4px; padding: 8px 10px; margin: 6px 0; }
+.proj.vermelho { border-left-color: #d4453a; } .proj.amarelo { border-left-color: #d9a400; } .proj.verde { border-left-color: #2e9b6a; }
+.proj .linha1, .sec .linha1 { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.sec { margin-top: 16px; } .sec h3 { margin: 0; font-size: 15px; }
+.fazer { margin-top: 4px; font-size: 13px; }
+.agenda td.dia { white-space: nowrap; font-weight: 600; width: 1%; }
+.agenda td.dia.venc { color: var(--vermelho); }
+.dias { color: var(--suave); font-weight: 400; font-size: 12px; margin-left: 6px; }
+td.alerta { color: var(--vermelho); font-weight: 700; }
+tr.sem td:first-child { font-style: italic; }
+.barrinha { display: inline-block; height: 8px; background: var(--azul); border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+.kpi.est { cursor: default; }

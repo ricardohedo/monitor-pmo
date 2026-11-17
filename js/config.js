@@ -91,6 +91,42 @@
         }
       },
 
+
+      // Carga da equipe: quanto cada pessoa carrega ao mesmo tempo.
+      carga: {
+        listasExecucao: ['Em Execução'],   // o que conta como "em execução"
+        wipMax: 3,                         // acima disso em execução = sobrecarga
+        pontosMax: 8,                      // soma dos pontos de esforço acima disso = sobrecarga
+        pesoEsforco: { alto: 3, medio: 2, baixo: 1 },
+        pesoSemEsforco: 2,                 // projeto sem "Esforço estimado" vale como médio
+        diasProximo: 7                     // "vence em breve" na carga
+      },
+
+      // Prazos (linha do tempo): janelas e alerta de "pouco andado".
+      prazos: {
+        dias: 30,            // olha prazos até N dias à frente
+        diasAlerta: 14,      // prazo em até N dias...
+        progressoMin: 0.5,   // ...com menos de 50% das checklists = pouco andado
+        diasVarejo: 5        // avisa se o prazo cai até N dias antes de uma data do varejo
+      },
+
+      // Onde atuar / Minhas ações: pontuação de urgência (maior = olhar primeiro).
+      atuar: {
+        comece: 3,           // quantos entram em "Comece por estes"
+        depois: 5,           // quantos entram em "Depois"
+        pesos: { atrasado: 40, atrasoPorDia: 1, atrasoMax: 30, semResponsavel: 30,
+                 prazoProximo: 20, parado: 15, ritmo: 15, semPrazo: 10, urgente: 30 },
+        bonusPrioridade: { maxima: 50, alta: 30, media: 10 },
+        quasePronto: 0.9, minimoItens: 3,
+        diasEmRisco: 14, progressoEmRisco: 0.5
+      },
+
+      // Radar: o que vai virar alerta nos próximos N dias se ninguém mexer.
+      radar: { dias: 7 },
+
+      // Conquistas: entregas recentes e reta final.
+      conquistas: { dias: 30, quasePronto: 0.9, minimoItens: 3, limite: 8 },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

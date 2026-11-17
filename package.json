@@ -19,7 +19,14 @@
       "js/meudia.js",
       "js/riscos.js",
       "js/pauta.js",
-      "js/tendencia.js"
+      "js/tendencia.js",
+      "js/itens.js",
+      "js/carga.js",
+      "js/prazos.js",
+      "js/atuar.js",
+      "js/radar.js",
+      "js/conquistas.js",
+      "js/cadastro.js"
     ]
   },
   "devDependencies": {
