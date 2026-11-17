@@ -9,9 +9,10 @@
   var N = isNode ? require('./novos.js') : root.MonitorPMO;
   var R = isNode ? require('./relatorio.js') : root.MonitorPMO;
   var G = isNode ? require('./resumogestor.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(H, I, V, N, R, G);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, V, N, R, G));
-})(typeof self !== 'undefined' ? self : this, function (H, I, V, N, R, G) {
+  var E = isNode ? require('./escalonamento.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(H, I, V, N, R, G, E);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, V, N, R, G, E));
+})(typeof self !== 'undefined' ? self : this, function (H, I, V, N, R, G, E) {
   var DIA = 86400000;
 
   function copia(x) { return JSON.parse(JSON.stringify(x || {})); }
@@ -127,6 +128,16 @@
         linhas: cortar(novosVenc.map(function (i) { return i.name + ' (' + nomeResp(i) + '): ' + i.checklists.vencidos + ' item(ns) vencido(s)'; }), ac.maxLinhas) });
     }
 
+    // 8) Escalonamento: projeto que acabou de subir para a diretoria (decisão que só ela pode tomar)
+    var escDir = E.montarEscalonamento(dados.itens, config, agora).diretoria;
+    var antesEsc = lista(est, 'escalDiretoria');
+    var novosEsc = escDir.filter(function (e) { return antesEsc.indexOf(e.id) === -1; });
+    est.escalDiretoria = escDir.map(function (e) { return e.id; });
+    if (!primeiraVez && novosEsc.length) {
+      alertas.push({ id: 'escalonamento', tipo: 'escalonamento', titulo: I.pluralPMO(novosEsc.length, 'projeto subiu para decisão da diretoria', 'projetos subiram para decisão da diretoria'),
+        linhas: cortar(novosEsc.map(function (e) { return e.name + ' (' + (e.responsaveis.join(', ') || 'sem responsável') + '): ' + e.motivos[0]; }), ac.maxLinhas) });
+    }
+
     // Limpa lembranças antigas e marca como iniciado
     var limite = hoje - ac.retencaoDias * DIA;
     Object.keys(est.enviados).forEach(function (k) {
@@ -141,7 +152,7 @@
   /* Resumo semanal para REVISÃO do Ricardo: relatório executivo + um rascunho de mensagem por gestor. */
   function montarSemanal(dados, config, agora, nomeBoard) {
     var rel = R.montarRelatorio(dados.itens, config, agora, nomeBoard);
-    var res = G.montarResumos(dados.itens, config);
+    var res = G.montarResumos(dados.itens, config, agora);
     var partes = [rel.texto];
     if (res.gestores.length) {
       partes.push('\n--- Rascunhos de mensagem por gestor (revise antes de enviar; nada foi enviado a eles) ---');

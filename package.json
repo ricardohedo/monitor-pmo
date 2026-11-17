@@ -45,7 +45,12 @@
       "js/pulso.js",
       "js/prioridades.js",
       "js/diretoria.js",
-      "js/alertas.js"
+      "js/alertas.js",
+      "js/regras.js",
+      "js/melancia.js",
+      "js/escalonamento.js",
+      "js/boletim.js",
+      "js/ficha.js"
     ]
   },
   "devDependencies": {

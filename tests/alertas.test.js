@@ -59,7 +59,7 @@ describe('montarAlertas: o que mudou', () => {
   test('vence amanhã e venceu ontem: cada card avisa uma vez por prazo', () => {
     const cards = () => [card('Amanha', { customFieldItems: [fim(1)] }), card('Ontem', { customFieldItems: [fim(-1)] })];
     const r1 = roda(cards(), base());
-    expect(r1.alertas.map(a => a.id).sort()).toEqual(['amanha', 'criticos', 'venceu']);
+    expect(r1.alertas.map(a => a.id).sort()).toEqual(['amanha', 'criticos', 'escalonamento', 'venceu']);
     expect(r1.alertas.find(a => a.id === 'amanha').linhas[0]).toContain('Amanha (Ana Souza) - 25% da checklist');
     expect(r1.alertas.find(a => a.id === 'venceu').titulo).toBe('1 projeto venceu ontem');
     const r2 = roda(cards(), r1.estado);

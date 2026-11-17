@@ -164,7 +164,7 @@
       capacidade: { meses: 6, pontosMesMax: 12 },
 
       // Resumo por gestor (mensagem semanal para o Chat).
-      resumo: { limiteAcoes: 3, diasPrazo: 14 },
+      resumo: { limiteAcoes: 3, diasPrazo: 14, prazoCorrecaoDias: 3 },
 
       // Triagem de demandas: o que falta para uma demanda virar projeto pronto para priorizar.
       triagem: {
@@ -204,6 +204,25 @@
         maxLinhas: 8,               // linhas por alerta (o resto vira "e mais N")
         retencaoDias: 30,           // quanto tempo lembrar que um aviso já foi enviado
         limiteChat: 3500            // tamanho máximo da mensagem no Chat
+      },
+
+      // Escalonamento: quando um problema sobe do gestor para o PMO e para a diretoria (critérios objetivos).
+      escalonamento: {
+        pmoAtrasoDias: 7,              // crítico com atraso >= N dias sobe ao PMO
+        pmoParadoDias: 14,             // crítico parado há >= N dias sobe ao PMO
+        diretoriaAtrasoDias: 30,       // atraso >= N dias sobe à diretoria
+        diretoriaPrioridadeAtrasoDias: 7,  // prioridade máxima/alta com atraso >= N dias sobe à diretoria
+        diretoriaVarejoDias: 14,       // projeto em risco para data forte a <= N dias sobe à diretoria
+        prioridadesAltas: ['maxima', 'alta']
+      },
+
+      // Projeto "melancia": verde por fora, com problemas escondidos por dentro.
+      melancia: { minSinais: 2, minFaltando: 3 },
+
+      // Boletim do gestor: pesos (somam 100) e faixas da nota.
+      boletim: {
+        pesos: { cadastro: 30, prazo: 30, movimento: 20, saude: 20 },
+        faixas: { noPadrao: 85, atencao: 60 }   // >= 85 no padrão; >= 60 atenção; abaixo disso crítico
       },
 
       // Padrão PMO (card criado do template "NOME DO PROJETO").
@@ -1070,7 +1089,12 @@
     };
   }
 
-  return { montarAtuar: montarAtuar };
+  /* Todas as ações que um projeto pede (não só a primeira), na ordem de gravidade. */
+  function acoesDoItem(item, config) {
+    return pontuar(item, config.atuar).chaves.map(function (k) { return { chave: k, fazer: FAZER[k] }; });
+  }
+
+  return { montarAtuar: montarAtuar, acoesDoItem: acoesDoItem, ACOES_PADRAO: FAZER };
 });
 
 
@@ -1257,9 +1281,10 @@
   var isNode = typeof module === 'object' && module.exports;
   var A = isNode ? require('./atuar.js') : root.MonitorPMO;
   var I = isNode ? require('./itens.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(A, I);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(A, I));
-})(typeof self !== 'undefined' ? self : this, function (A, I) {
+  var H = isNode ? require('./health.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(A, I, H);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(A, I, H));
+})(typeof self !== 'undefined' ? self : this, function (A, I, H) {
 
   function primeiroNome(n) {
     var p = String(n || '').trim().split(/\s+/)[0] || '';
@@ -1270,8 +1295,19 @@
     return d < 0 ? 'vencido há ' + Math.abs(d) + 'd' : d === 0 ? 'hoje' : d === 1 ? 'amanhã' : 'em ' + d + 'd';
   }
 
-  /* montarResumos(itens, config) -> { gestores: [{ id, nome, ativos, criticos, texto }], semResponsavel } */
-  function montarResumos(itens, config) {
+  function dataHoraBR(agora, tz) {
+    var d = new Date(agora.getTime() + tz * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear() + ' às ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes());
+  }
+
+  function dataBRCurta(chave) {
+    var d = new Date(chave), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1);
+  }
+
+  /* montarResumos(itens, config, agora) -> { gestores: [{ id, nome, ativos, criticos, texto }], semResponsavel }
+     Com `agora`, o texto vira uma "carta de ciência": prazo combinado para corrigir e carimbo de data/hora. */
+  function montarResumos(itens, config, agora) {
     var rc = config.resumo;
     var ativos = itens.filter(function (i) { return i.ativo; });
     var pessoas = {};
@@ -1302,6 +1338,13 @@
       }
       if (faltaCad) linhas.push('- ' + I.pluralPMO(faltaCad, 'projeto com cadastro incompleto', 'projetos com cadastro incompleto') + ' (campos do padrão PMO).');
       if (!acoes.length && !prazos.length && !faltaCad) linhas.push('- Tudo em ordem. Obrigado!');
+      else if (agora) {
+        var limite = H.chaveDia(agora, config.tzOffsetHoras) + rc.prazoCorrecaoDias * 86400000;
+        linhas.push('- Combinado: corrigir o que está marcado acima até ' + dataBRCurta(limite) + '.');
+      }
+      if (agora) {
+        linhas.push('(Resumo gerado em ' + dataHoraBR(agora, config.tzOffsetHoras) + ' a partir do Trello. As regras e como corrigir cada ponto estão em Guia do gestor > Regras e como corrigir.)');
+      }
       return { id: id, nome: nome, ativos: meus.length, criticos: cor.vermelho, texto: linhas.join('\n') };
     }).sort(function (a, b) { return b.criticos - a.criticos || b.ativos - a.ativos || a.nome.localeCompare(b.nome); });
 
@@ -1309,6 +1352,98 @@
   }
 
   return { montarResumos: montarResumos };
+});
+
+
+/* ===== js/escalonamento.js ===== */
+/* Monitor PMO - escalonamento: quando um problema sai do gestor, vai para o PMO e depois para a
+   diretoria, por critérios OBJETIVOS (config.escalonamento). Ninguém decide "se avisa ou não":
+   a regra decide. Funções puras, somente leitura. */
+(function (root, factory) {
+  var isNode = typeof module === 'object' && module.exports;
+  var V = isNode ? require('./varejo.js') : root.MonitorPMO;
+  var I = isNode ? require('./itens.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(V, I);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(V, I));
+})(typeof self !== 'undefined' ? self : this, function (V, I) {
+  var NIVEIS = { gestor: 1, pmo: 2, diretoria: 3 };
+
+  function dataBR(chave) {
+    var d = new Date(chave), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear();
+  }
+
+  /* montarEscalonamento(itens, config, agora)
+     -> { diretoria: [...], pmo: [...], gestor: [...], contagem } ; cada item: { id, name, nivel, motivos, responsaveis, diasAtraso } */
+  function montarEscalonamento(itens, config, agora) {
+    var ec = config.escalonamento;
+    var ativos = itens.filter(function (i) { return i.ativo; });
+
+    // Projetos em risco para uma data forte próxima
+    var varejoRisco = {};
+    V.montarVarejo(itens, config, agora).datas.forEach(function (d) {
+      if (d.dias > ec.diretoriaVarejoDias) return;
+      d.ligados.concat(d.ate).forEach(function (l) {
+        if (l.motivos.length || l.cor !== 'verde') (varejoRisco[l.id] = varejoRisco[l.id] || []).push(d.nome + ' em ' + d.dias + ' dias');
+      });
+    });
+
+    var out = [];
+    ativos.forEach(function (i) {
+      // Verde só escala se estiver em risco para uma data forte (ex.: prazo depois do Natal ao qual está ligado).
+      if (i.cor === 'verde' && !varejoRisco[i.id]) return;
+      var atraso = i.diasPrazo !== null && i.diasPrazo < 0 ? Math.abs(i.diasPrazo) : 0;
+      var alta = ec.prioridadesAltas.indexOf(i.prioridade) !== -1;
+      var dir = [], pmo = [];
+
+      if (atraso >= ec.diretoriaAtrasoDias) dir.push('atraso de ' + atraso + ' dias (limite ' + ec.diretoriaAtrasoDias + ')');
+      if (alta && atraso >= ec.diretoriaPrioridadeAtrasoDias) dir.push('prioridade ' + i.prioridadeTxt + ' com ' + atraso + ' dias de atraso');
+      if (i.urgente && i.cor === 'vermelho') dir.push('marcado como urgente e crítico');
+      if (varejoRisco[i.id]) dir.push('em risco para ' + varejoRisco[i.id][0]);
+
+      if (i.cor === 'vermelho' && atraso >= ec.pmoAtrasoDias) pmo.push('crítico com ' + atraso + ' dias de atraso');
+      if (I.temMotivo(i, 'Impedimento')) pmo.push('impedimento declarado');
+      if (!i.ids.length) pmo.push('sem responsável (o PMO precisa atribuir)');
+      if (i.cor === 'vermelho' && i.parado !== null && i.parado >= ec.pmoParadoDias) pmo.push('crítico e parado há ' + i.parado + ' dias');
+
+      var nivel = dir.length ? 'diretoria' : pmo.length ? 'pmo' : 'gestor';
+      out.push({
+        id: i.id, name: i.name, lista: i.lista, cor: i.cor, nivel: nivel,
+        motivos: dir.length ? dir.concat(pmo) : pmo.length ? pmo : i.s.motivos.slice(0, 3),
+        responsaveis: i.responsaveis, diasAtraso: atraso, prioridade: i.prioridadeTxt, prazo: i.prazo, diasPrazo: i.diasPrazo,
+        progresso: i.progresso
+      });
+    });
+    out.sort(function (a, b) {
+      return NIVEIS[b.nivel] - NIVEIS[a.nivel] || b.diasAtraso - a.diasAtraso || a.name.localeCompare(b.name);
+    });
+    var por = function (n) { return out.filter(function (x) { return x.nivel === n; }); };
+    return {
+      diretoria: por('diretoria'), pmo: por('pmo'), gestor: por('gestor'),
+      contagem: { diretoria: por('diretoria').length, pmo: por('pmo').length, gestor: por('gestor').length }
+    };
+  }
+
+  /* Ficha de escalonamento no formato de uma página: problema, impacto, opções, recomendação e decisão pedida. */
+  function textoEscalonamento(e, config, agora) {
+    var l = [];
+    l.push('ESCALONAMENTO - ' + e.name);
+    l.push('Data: ' + dataBR(new Date(agora).getTime()) + ' | Responsável: ' + (e.responsaveis.join(', ') || 'sem responsável') + ' | Lista: ' + e.lista);
+    l.push('');
+    l.push('Problema: ' + e.motivos.join('; ') + '.');
+    var imp = [];
+    if (e.prazo) imp.push('prazo ' + (e.diasPrazo < 0 ? 'vencido há ' + e.diasAtraso + ' dias' : 'em ' + e.diasPrazo + ' dias'));
+    else imp.push('sem prazo cadastrado');
+    if (e.prioridade) imp.push('prioridade ' + e.prioridade);
+    if (e.progresso !== null) imp.push(Math.round(e.progresso * 100) + '% da checklist feita');
+    l.push('Impacto: ' + imp.join(', ') + '.');
+    l.push('Opções (a preencher): 1) ______  2) ______');
+    l.push('Recomendação (a preencher): ______');
+    l.push('Decisão solicitada: ' + (e.nivel === 'diretoria' ? 'definir se o projeto segue, é replanejado ou é suspenso, e quem responde por isso.' : 'confirmar responsável e novo prazo, ou remover o impedimento.'));
+    return l.join('\n');
+  }
+
+  return { montarEscalonamento: montarEscalonamento, textoEscalonamento: textoEscalonamento };
 });
 
 
@@ -1324,9 +1459,10 @@
   var V = isNode ? require('./varejo.js') : root.MonitorPMO;
   var CD = isNode ? require('./cadastro.js') : root.MonitorPMO;
   var CQ = isNode ? require('./conquistas.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(H, I, C, P, V, CD, CQ);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, C, P, V, CD, CQ));
-})(typeof self !== 'undefined' ? self : this, function (H, I, C, P, V, CD, CQ) {
+  var E = isNode ? require('./escalonamento.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(H, I, C, P, V, CD, CQ, E);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, C, P, V, CD, CQ, E));
+})(typeof self !== 'undefined' ? self : this, function (H, I, C, P, V, CD, CQ, E) {
   var ORDEM = { vermelho: 0, amarelo: 1, verde: 2 };
 
   function dataBR(chave) {
@@ -1395,6 +1531,14 @@
       if (conq.totalEntregas) lq.push(plural(conq.totalEntregas, 'entrega', 'entregas') + ' nos últimos ' + config.conquistas.dias + ' dias.');
       if (conq.totalReta) lq.push(plural(conq.totalReta, 'projeto', 'projetos') + ' na reta final (checklist quase completa).');
       secoes.push({ titulo: 'Entregas', linhas: lq });
+    }
+
+    var esc = E.montarEscalonamento(itens, config, agora);
+    if (esc.diretoria.length) {
+      var limDir = config.pauta.limiteLista;
+      var ld = esc.diretoria.slice(0, limDir).map(function (e) { return e.name + ': ' + e.motivos[0]; });
+      if (esc.diretoria.length > limDir) ld.push('... e mais ' + (esc.diretoria.length - limDir) + '.');
+      secoes.push({ titulo: 'Decisões necessárias da diretoria', linhas: ld });
     }
 
     var titulo = 'Relatório do portfólio' + (nomeBoard ? ' - ' + nomeBoard : '') + ' - ' + dataBR(hoje);
@@ -1497,9 +1641,10 @@
   var N = isNode ? require('./novos.js') : root.MonitorPMO;
   var R = isNode ? require('./relatorio.js') : root.MonitorPMO;
   var G = isNode ? require('./resumogestor.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(H, I, V, N, R, G);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, V, N, R, G));
-})(typeof self !== 'undefined' ? self : this, function (H, I, V, N, R, G) {
+  var E = isNode ? require('./escalonamento.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(H, I, V, N, R, G, E);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, V, N, R, G, E));
+})(typeof self !== 'undefined' ? self : this, function (H, I, V, N, R, G, E) {
   var DIA = 86400000;
 
   function copia(x) { return JSON.parse(JSON.stringify(x || {})); }
@@ -1615,6 +1760,16 @@
         linhas: cortar(novosVenc.map(function (i) { return i.name + ' (' + nomeResp(i) + '): ' + i.checklists.vencidos + ' item(ns) vencido(s)'; }), ac.maxLinhas) });
     }
 
+    // 8) Escalonamento: projeto que acabou de subir para a diretoria (decisão que só ela pode tomar)
+    var escDir = E.montarEscalonamento(dados.itens, config, agora).diretoria;
+    var antesEsc = lista(est, 'escalDiretoria');
+    var novosEsc = escDir.filter(function (e) { return antesEsc.indexOf(e.id) === -1; });
+    est.escalDiretoria = escDir.map(function (e) { return e.id; });
+    if (!primeiraVez && novosEsc.length) {
+      alertas.push({ id: 'escalonamento', tipo: 'escalonamento', titulo: I.pluralPMO(novosEsc.length, 'projeto subiu para decisão da diretoria', 'projetos subiram para decisão da diretoria'),
+        linhas: cortar(novosEsc.map(function (e) { return e.name + ' (' + (e.responsaveis.join(', ') || 'sem responsável') + '): ' + e.motivos[0]; }), ac.maxLinhas) });
+    }
+
     // Limpa lembranças antigas e marca como iniciado
     var limite = hoje - ac.retencaoDias * DIA;
     Object.keys(est.enviados).forEach(function (k) {
@@ -1629,7 +1784,7 @@
   /* Resumo semanal para REVISÃO do Ricardo: relatório executivo + um rascunho de mensagem por gestor. */
   function montarSemanal(dados, config, agora, nomeBoard) {
     var rel = R.montarRelatorio(dados.itens, config, agora, nomeBoard);
-    var res = G.montarResumos(dados.itens, config);
+    var res = G.montarResumos(dados.itens, config, agora);
     var partes = [rel.texto];
     if (res.gestores.length) {
       partes.push('\n--- Rascunhos de mensagem por gestor (revise antes de enviar; nada foi enviado a eles) ---');

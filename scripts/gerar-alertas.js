@@ -6,7 +6,7 @@ const path = require('path');
 const RAIZ = path.join(__dirname, '..');
 // Ordem = dependências primeiro (cada módulo lê o que já foi definido antes).
 const MODULOS = ['config', 'health', 'padrao', 'itens', 'roadmap', 'carga', 'prazos', 'atuar', 'varejo',
-  'cadastro', 'conquistas', 'resumogestor', 'relatorio', 'novos', 'alertas'];
+  'cadastro', 'conquistas', 'resumogestor', 'escalonamento', 'relatorio', 'novos', 'alertas'];
 
 function gerar() {
   const partes = ['/* PMO Alertas - ARQUIVO GERADO por "npm run alertas:gerar". Não edite aqui: edite js/*.js ou alertas/gas.js. */'];

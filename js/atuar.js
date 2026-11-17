@@ -65,5 +65,10 @@
     };
   }
 
-  return { montarAtuar: montarAtuar };
+  /* Todas as ações que um projeto pede (não só a primeira), na ordem de gravidade. */
+  function acoesDoItem(item, config) {
+    return pontuar(item, config.atuar).chaves.map(function (k) { return { chave: k, fazer: FAZER[k] }; });
+  }
+
+  return { montarAtuar: montarAtuar, acoesDoItem: acoesDoItem, ACOES_PADRAO: FAZER };
 });

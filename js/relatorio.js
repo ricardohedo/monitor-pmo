@@ -9,9 +9,10 @@
   var V = isNode ? require('./varejo.js') : root.MonitorPMO;
   var CD = isNode ? require('./cadastro.js') : root.MonitorPMO;
   var CQ = isNode ? require('./conquistas.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(H, I, C, P, V, CD, CQ);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, C, P, V, CD, CQ));
-})(typeof self !== 'undefined' ? self : this, function (H, I, C, P, V, CD, CQ) {
+  var E = isNode ? require('./escalonamento.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(H, I, C, P, V, CD, CQ, E);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, I, C, P, V, CD, CQ, E));
+})(typeof self !== 'undefined' ? self : this, function (H, I, C, P, V, CD, CQ, E) {
   var ORDEM = { vermelho: 0, amarelo: 1, verde: 2 };
 
   function dataBR(chave) {
@@ -80,6 +81,14 @@
       if (conq.totalEntregas) lq.push(plural(conq.totalEntregas, 'entrega', 'entregas') + ' nos últimos ' + config.conquistas.dias + ' dias.');
       if (conq.totalReta) lq.push(plural(conq.totalReta, 'projeto', 'projetos') + ' na reta final (checklist quase completa).');
       secoes.push({ titulo: 'Entregas', linhas: lq });
+    }
+
+    var esc = E.montarEscalonamento(itens, config, agora);
+    if (esc.diretoria.length) {
+      var limDir = config.pauta.limiteLista;
+      var ld = esc.diretoria.slice(0, limDir).map(function (e) { return e.name + ': ' + e.motivos[0]; });
+      if (esc.diretoria.length > limDir) ld.push('... e mais ' + (esc.diretoria.length - limDir) + '.');
+      secoes.push({ titulo: 'Decisões necessárias da diretoria', linhas: ld });
     }
 
     var titulo = 'Relatório do portfólio' + (nomeBoard ? ' - ' + nomeBoard : '') + ' - ' + dataBR(hoje);

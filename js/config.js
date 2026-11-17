@@ -161,7 +161,7 @@
       capacidade: { meses: 6, pontosMesMax: 12 },
 
       // Resumo por gestor (mensagem semanal para o Chat).
-      resumo: { limiteAcoes: 3, diasPrazo: 14 },
+      resumo: { limiteAcoes: 3, diasPrazo: 14, prazoCorrecaoDias: 3 },
 
       // Triagem de demandas: o que falta para uma demanda virar projeto pronto para priorizar.
       triagem: {
@@ -201,6 +201,25 @@
         maxLinhas: 8,               // linhas por alerta (o resto vira "e mais N")
         retencaoDias: 30,           // quanto tempo lembrar que um aviso já foi enviado
         limiteChat: 3500            // tamanho máximo da mensagem no Chat
+      },
+
+      // Escalonamento: quando um problema sobe do gestor para o PMO e para a diretoria (critérios objetivos).
+      escalonamento: {
+        pmoAtrasoDias: 7,              // crítico com atraso >= N dias sobe ao PMO
+        pmoParadoDias: 14,             // crítico parado há >= N dias sobe ao PMO
+        diretoriaAtrasoDias: 30,       // atraso >= N dias sobe à diretoria
+        diretoriaPrioridadeAtrasoDias: 7,  // prioridade máxima/alta com atraso >= N dias sobe à diretoria
+        diretoriaVarejoDias: 14,       // projeto em risco para data forte a <= N dias sobe à diretoria
+        prioridadesAltas: ['maxima', 'alta']
+      },
+
+      // Projeto "melancia": verde por fora, com problemas escondidos por dentro.
+      melancia: { minSinais: 2, minFaltando: 3 },
+
+      // Boletim do gestor: pesos (somam 100) e faixas da nota.
+      boletim: {
+        pesos: { cadastro: 30, prazo: 30, movimento: 20, saude: 20 },
+        faixas: { noPadrao: 85, atencao: 60 }   // >= 85 no padrão; >= 60 atenção; abaixo disso crítico
       },
 
       // Padrão PMO (card criado do template "NOME DO PROJETO").

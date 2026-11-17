@@ -6,7 +6,7 @@
 
   t.render(function () {
     return U.lerItens(t).then(function (x) {
-      r = M.montarResumos(x.itens, M.config);
+      r = M.montarResumos(x.itens, M.config, new Date());
       var box = document.getElementById('conteudo');
       box.textContent = '';
       document.getElementById('resumo').textContent = r.gestores.length + ' gestor(es) com projeto ativo' +

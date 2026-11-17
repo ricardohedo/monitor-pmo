@@ -21,6 +21,13 @@
         g.appendChild(c);
       });
       box.appendChild(g);
+      if (d.decisoes.length) {
+        box.appendChild(U.el('h2', null, 'Decisões necessárias desta semana (' + d.totalDecisoes + ')'));
+        var ld = U.el('ul', 'dir-frases');
+        d.decisoes.forEach(function (x) { ld.appendChild(U.el('li', null, x)); });
+        if (d.totalDecisoes > d.decisoes.length) ld.appendChild(U.el('li', 'suave', '... e mais ' + (d.totalDecisoes - d.decisoes.length) + '. Veja Governança PMO > Escalonamento.'));
+        box.appendChild(ld);
+      }
       var f = U.el('ul', 'dir-frases');
       d.frases.forEach(function (x) { f.appendChild(U.el('li', null, x)); });
       box.appendChild(f);

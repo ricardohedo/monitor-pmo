@@ -4,9 +4,10 @@
   var isNode = typeof module === 'object' && module.exports;
   var A = isNode ? require('./atuar.js') : root.MonitorPMO;
   var I = isNode ? require('./itens.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(A, I);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(A, I));
-})(typeof self !== 'undefined' ? self : this, function (A, I) {
+  var H = isNode ? require('./health.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(A, I, H);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(A, I, H));
+})(typeof self !== 'undefined' ? self : this, function (A, I, H) {
 
   function primeiroNome(n) {
     var p = String(n || '').trim().split(/\s+/)[0] || '';
@@ -17,8 +18,19 @@
     return d < 0 ? 'vencido há ' + Math.abs(d) + 'd' : d === 0 ? 'hoje' : d === 1 ? 'amanhã' : 'em ' + d + 'd';
   }
 
-  /* montarResumos(itens, config) -> { gestores: [{ id, nome, ativos, criticos, texto }], semResponsavel } */
-  function montarResumos(itens, config) {
+  function dataHoraBR(agora, tz) {
+    var d = new Date(agora.getTime() + tz * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear() + ' às ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes());
+  }
+
+  function dataBRCurta(chave) {
+    var d = new Date(chave), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth() + 1);
+  }
+
+  /* montarResumos(itens, config, agora) -> { gestores: [{ id, nome, ativos, criticos, texto }], semResponsavel }
+     Com `agora`, o texto vira uma "carta de ciência": prazo combinado para corrigir e carimbo de data/hora. */
+  function montarResumos(itens, config, agora) {
     var rc = config.resumo;
     var ativos = itens.filter(function (i) { return i.ativo; });
     var pessoas = {};
@@ -49,6 +61,13 @@
       }
       if (faltaCad) linhas.push('- ' + I.pluralPMO(faltaCad, 'projeto com cadastro incompleto', 'projetos com cadastro incompleto') + ' (campos do padrão PMO).');
       if (!acoes.length && !prazos.length && !faltaCad) linhas.push('- Tudo em ordem. Obrigado!');
+      else if (agora) {
+        var limite = H.chaveDia(agora, config.tzOffsetHoras) + rc.prazoCorrecaoDias * 86400000;
+        linhas.push('- Combinado: corrigir o que está marcado acima até ' + dataBRCurta(limite) + '.');
+      }
+      if (agora) {
+        linhas.push('(Resumo gerado em ' + dataHoraBR(agora, config.tzOffsetHoras) + ' a partir do Trello. As regras e como corrigir cada ponto estão em Guia do gestor > Regras e como corrigir.)');
+      }
       return { id: id, nome: nome, ativos: meus.length, criticos: cor.vermelho, texto: linhas.join('\n') };
     }).sort(function (a, b) { return b.criticos - a.criticos || b.ativos - a.ativos || a.nome.localeCompare(b.nome); });
 

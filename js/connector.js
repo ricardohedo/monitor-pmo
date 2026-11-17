@@ -69,17 +69,23 @@
     mapa: { texto: 'Mapa pessoa x fase', pagina: './mapa.html', titulo: 'Mapa de calor: pessoa x fase', cheia: false },
     pulso: { texto: 'Pulso do quadro', pagina: './pulso.html', titulo: 'Pulso do quadro: movimento e silêncio', cheia: false },
     prioridades: { texto: 'Prioridades em risco', pagina: './prioridades.html', titulo: 'Prioridades em risco', cheia: false },
+    ficha: { texto: 'Ficha do projeto', pagina: './ficha.html', titulo: 'Ficha do projeto: tudo em uma página', cheia: false },
+    regras: { texto: 'Regras e como corrigir', pagina: './regras.html', titulo: 'Regras e como corrigir', cheia: false },
+    boletim: { texto: 'Boletim do gestor', pagina: './boletim.html', titulo: 'Boletim do gestor', cheia: false },
+    escalonamento: { texto: 'Escalonamento', pagina: './escalonamento.html', titulo: 'Escalonamento: gestor, PMO e diretoria', cheia: false },
+    melancia: { texto: 'Projetos melancia', pagina: './melancia.html', titulo: 'Projetos melancia: verde por fora, problema por dentro', cheia: false },
     previa: { texto: 'Prévia dos alertas', pagina: './previa.html', titulo: 'Prévia dos alertas (o que a rotina do Google mandaria)', cheia: false },
     diretoria: { texto: 'Painel da diretoria', pagina: './diretoria.html', titulo: 'Painel da diretoria', cheia: true }
   };
 
   // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
   var PACOTES = {
-    base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
+    base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'], menu: { texto: 'Guia do gestor', icone: 'ficha',
+      itens: ['ficha', 'regras', 'boletim'] } },
     planejamento: { badges: false, rest: true, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
-      itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'funil', 'mapa', 'varejo', 'capacidade', 'radar'] } },
+      itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'melancia', 'funil', 'mapa', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
-      itens: ['diretoria', 'previa', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
+      itens: ['diretoria', 'escalonamento', 'previa', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
     // Estado antes da separação (conector sem <meta name="pacote">).
     tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
       menu: { texto: 'Mais visões PMO', icone: 'atuar',

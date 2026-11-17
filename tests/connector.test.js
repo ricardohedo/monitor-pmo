@@ -29,7 +29,7 @@ describe('connector por pacote', () => {
   test('base: semáforo, badges e botões de uso diário', () => {
     const c = carregar('base');
     expect(Object.keys(c).sort()).toEqual(['board-buttons', 'card-badges', 'card-detail-badges']);
-    expect(textos(c)).toEqual(['Monitor PMO', 'Meu dia PMO', 'Pauta PMO', 'Tendência PMO', 'Minhas ações']);
+    expect(textos(c)).toEqual(['Monitor PMO', 'Meu dia PMO', 'Pauta PMO', 'Tendência PMO', 'Minhas ações', 'Guia do gestor']);
   });
   test('planejamento: só um botão de menu, sem badges', () => {
     const c = carregar('planejamento');
@@ -46,7 +46,7 @@ describe('connector por pacote', () => {
     expect(textos(carregar('inexistente'))).toHaveLength(8);
     expect(Object.keys(carregar(null))).toHaveLength(3);
   });
-  test('os três pacotes cobrem as 31 visões sem repetir nenhuma e cada página existe', () => {
+  test('os três pacotes cobrem as 36 visões sem repetir nenhuma e cada página existe', () => {
     const vistas = [];
     ['base', 'planejamento', 'governanca'].forEach((p) => {
       const itens = [];
@@ -59,8 +59,8 @@ describe('connector por pacote', () => {
       });
       itens.forEach((m) => vistas.push(m.url));
     });
-    expect(vistas).toHaveLength(31);
-    expect(new Set(vistas).size).toBe(31);
+    expect(vistas).toHaveLength(36);
+    expect(new Set(vistas).size).toBe(36);
     vistas.forEach((u) => {
       const arq = u.replace('https://exemplo.test/monitor/', '');
       expect(fs.existsSync(path.join(__dirname, '..', arq))).toBe(true);

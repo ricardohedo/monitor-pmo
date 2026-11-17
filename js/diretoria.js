@@ -7,9 +7,10 @@
   var V = isNode ? require('./varejo.js') : root.MonitorPMO;
   var CD = isNode ? require('./cadastro.js') : root.MonitorPMO;
   var CQ = isNode ? require('./conquistas.js') : root.MonitorPMO;
-  if (isNode) module.exports = factory(H, P, V, CD, CQ);
-  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, P, V, CD, CQ));
-})(typeof self !== 'undefined' ? self : this, function (H, P, V, CD, CQ) {
+  var E = isNode ? require('./escalonamento.js') : root.MonitorPMO;
+  if (isNode) module.exports = factory(H, P, V, CD, CQ, E);
+  else root.MonitorPMO = Object.assign(root.MonitorPMO || {}, factory(H, P, V, CD, CQ, E));
+})(typeof self !== 'undefined' ? self : this, function (H, P, V, CD, CQ, E) {
 
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
 
@@ -55,7 +56,12 @@
     if (prazos.semPrazo.length) frases.push(plural(prazos.semPrazo.length, 'projeto sem prazo', 'projetos sem prazo') + ': impossível prometer entrega.');
     if (!frases.length) frases.push('Portfólio sem alertas relevantes.');
 
+    // Decisões que só a diretoria pode tomar (itens que subiram pelo escalonamento)
+    var esc = E.montarEscalonamento(itens, config, agora);
+    var decisoes = esc.diretoria.slice(0, 5).map(function (e) { return e.name + ': ' + e.motivos[0] + '.'; });
+
     return {
+      decisoes: decisoes, totalDecisoes: esc.diretoria.length,
       semaforo: semaforo, pctEmDia: pctEmDia, numeros: numeros, frases: frases.slice(0, 4),
       proximaData: proxima ? { nome: proxima.nome, dias: proxima.dias, diasUteis: proxima.diasUteis } : null
     };
