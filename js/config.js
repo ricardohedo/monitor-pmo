@@ -144,6 +144,17 @@
         listaRevisao: ['Em Revisão']
       },
 
+      // Metas do PMO: missões com data. tipo = com_responsavel | com_prazo | sem_atraso | cadastro_completo.
+      // data = nome de uma data do varejo (próxima ocorrência), "semana" (próxima sexta) ou AAAA-MM-DD.
+      metas: {
+        missoes: [
+          { nome: 'Zerar os atrasados até sexta', tipo: 'sem_atraso', data: 'semana' },
+          { nome: 'Todo projeto com responsável até o Natal', tipo: 'com_responsavel', data: 'Natal' },
+          { nome: 'Todo projeto com prazo definido até o Carnaval', tipo: 'com_prazo', data: 'Carnaval' },
+          { nome: 'Cadastro 100% completo antes da Páscoa', tipo: 'cadastro_completo', data: 'Páscoa' }
+        ]
+      },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

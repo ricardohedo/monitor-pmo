@@ -29,7 +29,9 @@
       "js/cadastro.js",
       "js/varejo.js",
       "js/area.js",
-      "js/higiene.js"
+      "js/higiene.js",
+      "js/metas.js",
+      "js/relatorio.js"
     ]
   },
   "devDependencies": {

@@ -46,7 +46,9 @@
     { texto: 'Conquistas da área', pagina: './conquistas.html', titulo: 'Conquistas da área', cheia: false },
     { texto: 'Calendário do varejo', pagina: './varejo.html', titulo: 'Calendário do varejo: dias úteis e projetos em risco', cheia: false },
     { texto: 'Por área solicitante', pagina: './area.html', titulo: 'Projetos por área solicitante', cheia: false },
-    { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false }
+    { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false },
+    { texto: 'Metas do PMO', pagina: './metas.html', titulo: 'Metas do PMO', cheia: false },
+    { texto: 'Relatório executivo', pagina: './relatorio.html', titulo: 'Relatório executivo do portfólio', cheia: false }
   ];
 
   function abrirVisao(v) {
