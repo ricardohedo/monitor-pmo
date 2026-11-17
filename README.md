@@ -36,6 +36,11 @@ Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/conf
 | Checklists | Progresso das checklists por projeto e fase, concluídos sem 100% (itens vencidos exigem API autorizada) |
 | Novos projetos | Criados hoje/no mês, certos x a ajustar, problemas mais comuns por área |
 | Lista de projetos | Tabela com filtros e ordenação; Copiar CSV |
+| Funil por lista | Projetos, saúde e tempo sem movimento por lista; onde o fluxo trava |
+| Mapa pessoa x fase | Mapa de calor: quem concentra projetos em qual fase e onde estão os críticos |
+| Pulso do quadro | Movimento recente x silêncio, por faixa de tempo e por pessoa |
+| Prioridades em risco | Projetos de prioridade máxima/alta (e urgentes) fora do verde |
+| Painel da diretoria | Números grandes e semáforo geral para projetar em reunião (atualiza sozinho) |
 | Triagem de demandas | O que falta para uma demanda nova virar projeto pronto para priorizar |
 
 Base comum: `js/itens.js` (monta os itens do board) e `js/comum.js` (telas). Cada visão tem um módulo puro testado (`js/<nome>.js`) e uma tela (`js/<nome>view.js` + `<nome>.html`).
