@@ -1,8 +1,8 @@
 /* Monitor PMO - Checklists (tela). Somente leitura. */
 (function () {
   var M = window.MonitorPMO, U = M.ui;
-  var t = window.TrelloPowerUp.iframe();
-  var todos = null, fase = '';
+  var t = window.TrelloPowerUp.iframe({ appKey: M.config.restApi.appKey, appName: M.config.restApi.appName });
+  var todos = null, fase = '', restEstado = null;
 
   function pct(n) { return Math.round(n * 100) + '%'; }
 
@@ -15,7 +15,23 @@
       ? r.total + ' itens de checklist em ' + r.projetos.length + ' projetos ativos · ' + r.vencidos + ' vencidos · ' + r.semPrazo + ' sem prazo'
       : 'Nenhum item de checklist nos projetos ativos.';
     if (!r.disponivel) {
-      box.appendChild(U.el('div', 'aviso', 'O Trello não entrega os itens das checklists a este Power-Up (só os nomes): aparece a contagem de itens feitos, sem prazo por item. Para ver itens vencidos e sem prazo é preciso autorizar a leitura pela API do Trello (decisão pendente do PMO).'));
+      var av = U.el('div', 'aviso');
+      if (restEstado === 'sem-autorizacao') {
+        av.appendChild(document.createTextNode('Para ver itens vencidos e sem prazo, autorize a leitura dos itens pela API do Trello (somente leitura: o Power-Up não altera nada). '));
+        var b = U.el('button', 'ativo', 'Autorizar leitura');
+        b.type = 'button';
+        b.addEventListener('click', function () {
+          U.autorizarRest(t).then(function () { carregar(); }).catch(function (e) {
+            av.appendChild(U.el('div', 'suave', 'Não foi possível autorizar: ' + (e && e.message ? e.message : e)));
+          });
+        });
+        av.appendChild(b);
+      } else if (restEstado && restEstado.indexOf('erro') === 0) {
+        av.appendChild(document.createTextNode('Não consegui ler os itens pela API (' + restEstado + '). Mostrando só a contagem de itens feitos.'));
+      } else {
+        av.appendChild(document.createTextNode('O Trello não entregou os itens das checklists: aparece só a contagem de itens feitos, sem prazo por item.'));
+      }
+      box.appendChild(av);
     }
     var kp = U.el('div', 'kpis');
     kp.appendChild(U.kpi('verde', r.feitos, 'Itens concluídos'));
@@ -69,13 +85,13 @@
         box.appendChild(p);
       });
     }
-    box.appendChild(U.el('div', 'rodape', 'Item vencido = pendente com prazo anterior a hoje. Item sem prazo = pendente sem data. Só leitura.'));
+    box.appendChild(U.el('div', 'rodape', 'Item vencido = pendente com prazo anterior a hoje. Item sem prazo = pendente sem data. Itens lidos pela API do Trello, somente leitura, só para quem autorizou.'));
     t.sizeTo('body').catch(function () {});
   }
 
-  t.render(function () {
-    return U.lerItens(t, true).then(function (x) {
-      todos = x.itens;
+  function carregar() {
+    return U.lerItens(t, true, true).then(function (x) {
+      todos = x.itens; restEstado = x.rest;
       var sel = document.getElementById('fase'); sel.textContent = '';
       var o = U.el('option', null, 'Todas'); o.value = ''; sel.appendChild(o);
       x.listas.forEach(function (l) {
@@ -84,6 +100,8 @@
       });
       desenhar();
     }).catch(U.erro);
-  });
+  }
+
+  t.render(function () { return carregar(); });
   document.getElementById('fase').addEventListener('change', function (ev) { fase = ev.target.value; if (todos) desenhar(); });
 })();

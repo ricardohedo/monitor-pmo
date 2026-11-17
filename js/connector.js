@@ -75,7 +75,7 @@
   // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
   var PACOTES = {
     base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
-    planejamento: { badges: false, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
+    planejamento: { badges: false, rest: true, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
       itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'funil', 'mapa', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
       itens: ['diretoria', 'prioridades', 'pulso', 'riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
@@ -186,5 +186,7 @@
     delete capacidades['card-badges'];
     delete capacidades['card-detail-badges'];
   }
-  window.TrelloPowerUp.initialize(capacidades);
+  var opcoes = pacote.rest && M.config && M.config.restApi
+    ? { appKey: M.config.restApi.appKey, appName: M.config.restApi.appName } : undefined;
+  window.TrelloPowerUp.initialize(capacidades, opcoes);
 })();

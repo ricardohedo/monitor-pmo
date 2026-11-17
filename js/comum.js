@@ -67,16 +67,44 @@
     });
   }
 
-  /* Lê o board e devolve os itens prontos para as visões. */
-  function lerItens(t, comChecklists) {
-    return Promise.all([
-      lerCards(t, comChecklists), t.lists('id', 'name'), t.board('customFields', 'members'), t.member('id', 'fullName')
-    ]).then(function (r) {
-      var membros = r[2].members || [];
-      var itens = M.montarItens(r[0], {
-        agora: new Date(), camposDef: r[2].customFields || [], listas: r[1], membros: membros
-      }, M.config);
-      return { itens: itens, cards: r[0], listas: r[1], camposDef: r[2].customFields || [], membros: membros, eu: r[3] || {} };
+  /* Itens das checklists (com prazo) pela API REST do Trello, SOMENTE LEITURA, se a pessoa autorizou.
+     Devolve 'ok', 'sem-autorizacao' ou 'erro: ...'. O token fica guardado pelo próprio Trello. */
+  function lerChecklistsRest(t, cards) {
+    var cfg = M.config.restApi;
+    var api = t.getRestApi();
+    return api.isAuthorized().then(function (ok) {
+      if (!ok) return 'sem-autorizacao';
+      return Promise.all([api.getToken(), t.board('id')]).then(function (r) {
+        var url = 'https://api.trello.com/1/boards/' + r[1].id + '/checklists?checkItems=all' +
+          '&checkItem_fields=name,state,due&fields=name,idCard&key=' + cfg.appKey + '&token=' + encodeURIComponent(r[0]);
+        return fetch(url).then(function (resp) {
+          if (!resp.ok) throw new Error('A API do Trello respondeu ' + resp.status);
+          return resp.json();
+        }).then(function (lista) { M.anexarChecklistsRest(cards, lista); return 'ok'; });
+      });
+    }).catch(function (e) { return 'erro: ' + (e && e.message ? e.message : e); });
+  }
+
+  function autorizarRest(t) {
+    var cfg = M.config.restApi;
+    return t.getRestApi().authorize({ scope: cfg.escopo, expiration: cfg.expiracao, name: cfg.appName });
+  }
+
+  /* Lê o board e devolve os itens prontos para as visões. Com `usarRest`, tenta completar as
+     checklists pela API (somente leitura) e devolve o estado em `rest` ('ok', 'sem-autorizacao' ou 'erro: ...'). */
+  function lerItens(t, comChecklists, usarRest) {
+    return lerCards(t, comChecklists).then(function (cards) {
+      var rest = usarRest ? lerChecklistsRest(t, cards) : Promise.resolve(null);
+      return rest.then(function (estado) {
+        return Promise.all([t.lists('id', 'name'), t.board('customFields', 'members'), t.member('id', 'fullName')]).then(function (r) {
+          var membros = r[1].members || [];
+          var itens = M.montarItens(cards, {
+            agora: new Date(), camposDef: r[1].customFields || [], listas: r[0], membros: membros
+          }, M.config);
+          return { itens: itens, cards: cards, listas: r[0], camposDef: r[1].customFields || [],
+            membros: membros, eu: r[2] || {}, rest: estado };
+        });
+      });
     });
   }
 
@@ -84,6 +112,6 @@
     document.getElementById('conteudo').textContent = 'Erro ao carregar: ' + (e && e.message ? e.message : e);
   }
 
-  M.ui = { lerCards: lerCards, prazoTxt: prazoTxt, el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
+  M.ui = { autorizarRest: autorizarRest, lerCards: lerCards, prazoTxt: prazoTxt, el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
     copiar: copiar, tag: tag, lerItens: lerItens, erro: erro };
 })();

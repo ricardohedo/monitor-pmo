@@ -59,6 +59,24 @@
     return r;
   }
 
+  /* Anexa aos cards as checklists lidas pela API REST do Trello (GET /boards/{id}/checklists?checkItems=all).
+     resposta: [{ id, name, idCard, checkItems: [{ state, due }] }]. Devolve quantos cards receberam itens. */
+  function anexarChecklistsRest(cards, resposta) {
+    var porCard = {};
+    (resposta || []).forEach(function (cl) {
+      (porCard[cl.idCard] || (porCard[cl.idCard] = [])).push({
+        id: cl.id, name: cl.name, checkItems: (cl.checkItems || []).map(function (it) {
+          return { id: it.id, name: it.name, state: it.state, due: it.due || null };
+        })
+      });
+    });
+    var n = 0;
+    cards.forEach(function (c) {
+      if (porCard[c.id]) { c.checklists = porCard[c.id]; n++; }
+    });
+    return n;
+  }
+
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
 
   /* montarItens(cards, ctx, config)
@@ -113,6 +131,7 @@
     valorCampo: valorCampo,
     criadoEm: criadoEm,
     resumoChecklists: resumoChecklists,
+    anexarChecklistsRest: anexarChecklistsRest,
     pluralPMO: plural,
     temMotivo: temMotivo
   };

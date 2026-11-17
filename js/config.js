@@ -190,6 +190,10 @@
       // Painel da diretoria: % de projetos em dia para o semáforo geral.
       diretoria: { verdeMin: 70, amareloMin: 40 },
 
+      // API do Trello (somente leitura) para itens de checklist com prazo. A appKey é PÚBLICA por desenho
+      // (identifica o Power-Up PMO Planejamento); o token é de cada pessoa e fica guardado pelo próprio Trello.
+      restApi: { appKey: '89b561f64915d85e23e1ab022f7fc1f8', appName: 'PMO Planejamento', escopo: 'read', expiracao: '30days' },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

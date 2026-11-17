@@ -4,14 +4,16 @@ const vm = require('vm');
 
 const codigo = fs.readFileSync(path.join(__dirname, '..', 'js', 'connector.js'), 'utf8');
 
-function carregar(pacote) {
+let opcoesRecebidas = null;
+function carregar(pacote, comConfig) {
   let caps = null;
+  opcoesRecebidas = null;
   const sandbox = {
     URL,
     window: {
       location: { href: 'https://exemplo.test/monitor/index.html' },
-      MonitorPMO: {},
-      TrelloPowerUp: { initialize: (c) => { caps = c; } }
+      MonitorPMO: comConfig ? { config: require('../js/config.js').config } : {},
+      TrelloPowerUp: { initialize: (c, o) => { caps = c; opcoesRecebidas = o; } }
     },
     document: { querySelector: () => (pacote ? { getAttribute: () => pacote } : null) }
   };
@@ -76,4 +78,20 @@ describe('connector por pacote', () => {
 test('index.html (Monitor PMO) usa o pacote base', () => {
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   expect(html).toContain('<meta name="pacote" content="base">');
+});
+
+test('só o Planejamento recebe a chave pública da API (leitura de checklists); os outros não', () => {
+  carregar('planejamento', true);
+  expect(opcoesRecebidas).toEqual({ appKey: require('../js/config.js').config.restApi.appKey, appName: 'PMO Planejamento' });
+  expect(opcoesRecebidas.appKey).toMatch(/^[0-9a-f]{32}$/);
+  carregar('governanca', true);
+  expect(opcoesRecebidas).toBeUndefined();
+  carregar('base', true);
+  expect(opcoesRecebidas).toBeUndefined();
+});
+
+test('a configuração da API é somente leitura e não contém segredo', () => {
+  const cfg = require('../js/config.js').config.restApi;
+  expect(cfg.escopo).toBe('read');
+  expect(Object.keys(cfg).sort()).toEqual(['appKey', 'appName', 'escopo', 'expiracao']);
 });

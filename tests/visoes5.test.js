@@ -1,4 +1,4 @@
-const { montarItens, criadoEm, resumoChecklists } = require('../js/itens.js');
+const { montarItens, criadoEm, resumoChecklists, anexarChecklistsRest } = require('../js/itens.js');
 const { montarChecklists } = require('../js/checklists.js');
 const { montarNovos } = require('../js/novos.js');
 const { montarLista, paraCSV } = require('../js/lista.js');
@@ -76,6 +76,36 @@ describe('criadoEm e resumoChecklists', () => {
   });
   test('item vence hoje não é vencido', () => {
     expect(resumoChecklists({ checklists: [cl('A', [it('incomplete', dia(0))])] }, AGORA, -3).vencidos).toBe(0);
+  });
+});
+
+describe('anexarChecklistsRest (leitura pela API do Trello)', () => {
+  const resposta = [
+    { id: 'c1', name: 'Plano', idCard: 'Ruim', checkItems: [
+      { id: 'i1', name: 'a', state: 'incomplete', due: dia(-5) }, { id: 'i2', name: 'b', state: 'incomplete', due: null },
+      { id: 'i3', name: 'c', state: 'complete', due: dia(-9) }] },
+    { id: 'c2', name: 'Validação', idCard: 'Ruim', checkItems: [{ id: 'i4', name: 'd', state: 'incomplete', due: dia(4) }] },
+    { id: 'c3', name: 'Outra', idCard: 'NaoExiste', checkItems: [] }
+  ];
+  test('anexa por card, converte itens e conta os cards atingidos', () => {
+    const cards = [card('Ruim', { checklists: [cl('Plano', [])] }), card('Boa')];
+    expect(anexarChecklistsRest(cards, resposta)).toBe(1);
+    expect(cards[0].checklists.map(c => c.name)).toEqual(['Plano', 'Validação']);
+    expect(cards[0].checklists[0].checkItems[1]).toEqual({ id: 'i2', name: 'b', state: 'incomplete', due: null });
+    expect(cards[1].checklists).toBeUndefined();
+  });
+  test('depois de anexar, a visão enxerga vencidos e sem prazo de verdade', () => {
+    const cards = [card('Ruim', { badges: { checkItems: 4, checkItemsChecked: 1 }, checklists: [cl('Plano', [])] })];
+    anexarChecklistsRest(cards, resposta);
+    const r = montarChecklists(itens(cards));
+    expect(r.disponivel).toBe(true);
+    expect([r.total, r.feitos, r.vencidos, r.semPrazo, r.projetosComVencido]).toEqual([4, 1, 1, 1, 1]);
+    expect(r.projetos[0].listas.map(l => [l.nome, l.vencidos, l.semPrazo])).toEqual([['Plano', 1, 1], ['Validação', 0, 0]]);
+  });
+  test('resposta vazia ou ausente não quebra', () => {
+    expect(anexarChecklistsRest([card('A')], [])).toBe(0);
+    expect(anexarChecklistsRest([card('A')], undefined)).toBe(0);
+    expect(anexarChecklistsRest([card('A')], [{ id: 'x', name: 'n', idCard: 'A' }])).toBe(1);
   });
 });
 
