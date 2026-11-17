@@ -9,7 +9,7 @@
        disponivel, total, feitos, pendentes, vencidos, semPrazo, projetosComVencido, projetosSemPrazo,
        progressoMedio, projetos, concluidosIncompletos, porFase } */
   function montarChecklists(itens) {
-    var comDados = itens.filter(function (i) { return i.checklists; });
+    var comDados = itens.filter(function (i) { return i.checklists && i.checklists.total > 0; });
     var disponivel = comDados.length > 0;
     var ativos = itens.filter(function (i) { return i.ativo; });
 

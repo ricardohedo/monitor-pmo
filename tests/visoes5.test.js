@@ -103,6 +103,11 @@ describe('montarChecklists', () => {
     expect(r.vencidos).toBe(0);
     expect(r.concluidosIncompletos).toHaveLength(1);
   });
+  test('checklists só com nomes (itens vazios) não contam como dados disponíveis', () => {
+    const r = montarChecklists(itens([card('Vazio', { badges: {}, checklists: [cl('A', []), cl('B', [])] }), card('ComBadge')]));
+    expect(r.disponivel).toBe(false);
+    expect(r.total).toBe(4);
+  });
   test('sem projetos', () => {
     const r = montarChecklists([]);
     expect([r.total, r.progressoMedio, r.projetos.length]).toEqual([0, 0, 0]);
