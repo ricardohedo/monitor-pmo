@@ -49,7 +49,7 @@ function ambiente(propsIniciais, opcoes) {
         const caminho = url.split('/1/')[1].split('?')[0];
         return { getResponseCode: () => 200, getContentText: () => JSON.stringify(dados[caminho]) };
       }
-      return { getResponseCode: () => 200, getContentText: () => 'ok' };
+      return { getResponseCode: () => o.statusChat || 200, getContentText: () => 'ok' };
     } },
     ScriptApp: {
       WeekDay: { MONDAY: 'MONDAY' },
@@ -114,6 +114,24 @@ describe('arquivo do Google (PMO-Alertas.gs)', () => {
     b.rodar('executarDiario_({ agora: new Date("' + SEGUNDA.toISOString() + '") })');
     expect(b.emails).toHaveLength(0);
     expect(b.chamadas.filter((c) => c.url === WEBHOOK)).toHaveLength(1);
+  });
+
+  test('o log prova o envio por e-mail e Chat, sem mostrar o endereço do webhook', () => {
+    const e = ambiente({ EMAIL_DESTINO: 'ricardo@bigbox.com.br', CHAT_WEBHOOK_PMO: WEBHOOK });
+    const r = e.rodar('testarEnvio()');
+    expect(r).toEqual({ enviado: true, email: true, chat: true });
+    const log = e.log.join(' | ');
+    expect(log).toContain('E-mail enviado para ricardo@bigbox.com.br.');
+    expect(log).toContain('Chat: mensagem enviada ao espaço.');
+    expect(log).not.toContain('chat.googleapis.com');
+  });
+
+  test('Chat que recusa (ex.: webhook errado) aparece no log como falha, sem derrubar o e-mail', () => {
+    const e = ambiente({ EMAIL_DESTINO: 'ricardo@bigbox.com.br', CHAT_WEBHOOK_PMO: WEBHOOK }, { statusChat: 404 });
+    const r = e.rodar('testarEnvio()');
+    expect(r).toEqual({ enviado: true, email: true, chat: false });
+    expect(e.log.join(' | ')).toContain('Chat: o Google respondeu 404');
+    expect(e.log.join(' | ')).not.toContain('chat.googleapis.com');
   });
 
   test('fim de semana não roda (nem consulta o Trello)', () => {

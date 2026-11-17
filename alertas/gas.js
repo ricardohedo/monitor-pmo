@@ -70,14 +70,17 @@ function enviar_(assunto, texto, forcar, simular) {
   }
   var res = { enviado: true, email: false, chat: false };
   var email = p.getProperty('EMAIL_DESTINO');
-  if (email) { MailApp.sendEmail(email, assunto, texto); res.email = true; }
+  if (email) { MailApp.sendEmail(email, assunto, texto); res.email = true; Logger.log('E-mail enviado para ' + email + '.'); }
   var hook = p.getProperty('CHAT_WEBHOOK_PMO');
   if (hook) {
-    UrlFetchApp.fetch(hook, {
+    var resp = UrlFetchApp.fetch(hook, {
       method: 'post', contentType: 'application/json; charset=UTF-8', muteHttpExceptions: true,
       payload: JSON.stringify({ text: MonitorPMO.limitarTexto('*' + assunto + '*\n' + texto, MonitorPMO.config.alertas.limiteChat) })
     });
-    res.chat = true;
+    var codigo = resp.getResponseCode();
+    res.chat = codigo >= 200 && codigo < 300;
+    // Nunca registra o endereço do webhook, só o resultado.
+    Logger.log(res.chat ? 'Chat: mensagem enviada ao espaço.' : 'Chat: o Google respondeu ' + codigo + ' (confira CHAT_WEBHOOK_PMO).');
   }
   if (!res.email && !res.chat) Logger.log('Atenção: nem EMAIL_DESTINO nem CHAT_WEBHOOK_PMO estão preenchidos.');
   return res;
