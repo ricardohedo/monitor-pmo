@@ -72,3 +72,8 @@ describe('connector por pacote', () => {
     });
   });
 });
+
+test('index.html (Monitor PMO) usa o pacote base', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  expect(html).toContain('<meta name="pacote" content="base">');
+});
