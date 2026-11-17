@@ -33,6 +33,9 @@ Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/conf
 | Calendário mensal | Grade do mês com prazos dos projetos, feriados e datas do varejo |
 | Capacidade por mês | Esforço (pontos) que vence em cada mês; destaca picos antes de datas fortes |
 | Resumo por gestor | Mensagem semanal pronta para colar no Chat, uma por gestor |
+| Checklists | Progresso das checklists por projeto e fase, concluídos sem 100% (itens vencidos exigem API autorizada) |
+| Novos projetos | Criados hoje/no mês, certos x a ajustar, problemas mais comuns por área |
+| Lista de projetos | Tabela com filtros e ordenação; Copiar CSV |
 | Triagem de demandas | O que falta para uma demanda nova virar projeto pronto para priorizar |
 
 Base comum: `js/itens.js` (monta os itens do board) e `js/comum.js` (telas). Cada visão tem um módulo puro testado (`js/<nome>.js`) e uma tela (`js/<nome>view.js` + `<nome>.html`).
