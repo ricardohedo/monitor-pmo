@@ -79,6 +79,7 @@
   return {
     montarItens: montarItens,
     normTexto: norm,
+    valorCampo: valorCampo,
     pluralPMO: plural,
     temMotivo: temMotivo
   };

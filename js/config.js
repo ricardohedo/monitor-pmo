@@ -155,6 +155,21 @@
         ]
       },
 
+      // Capacidade por mês: onde o trabalho se amontoa (por prazo de entrega).
+      capacidade: { meses: 6, pontosMesMax: 12 },
+
+      // Resumo por gestor (mensagem semanal para o Chat).
+      resumo: { limiteAcoes: 3, diasPrazo: 14 },
+
+      // Triagem de demandas: o que falta para uma demanda virar projeto pronto para priorizar.
+      triagem: {
+        listas: ['Backlog', 'Priorizados'],
+        incluirNovaDemanda: true,       // NOVA DEMANDA também entra (a lista fica fora do semáforo)
+        ignorar: ['NOME DO PROJETO', 'LEIA ANTES'],  // cards-modelo e instruções
+        campos: ['Área solicitante', 'Impacto no negócio', 'Esforço estimado', 'Prioridade'],
+        diasEspera: 14                  // demanda parada há mais disso = esperando demais
+      },
+
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {
         camposObrigatorios: [

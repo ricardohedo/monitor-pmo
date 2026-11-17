@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitor PMO - Resumo por gestor</title>
+  <link rel="stylesheet" href="./css/monitor.css">
+  <link rel="stylesheet" href="./css/visoes.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script defer src="./js/config.js"></script>
+  <script defer src="./js/health.js"></script>
+  <script defer src="./js/padrao.js"></script>
+  <script defer src="./js/itens.js"></script>
+  <script defer src="./js/atuar.js"></script>
+  <script defer src="./js/resumogestor.js"></script>
+  <script defer src="./js/comum.js"></script>
+  <script defer src="./js/resumogestorview.js"></script>
+</head>
+<body>
+  <div class="topo">
+    <strong>Resumo por gestor</strong>
+    <div><button id="copiar" type="button" class="ativo">Copiar todas as mensagens</button> <span id="msg" class="suave"></span></div>
+  </div>
+  <p id="resumo" class="resumo"></p>
+  <div id="conteudo"><div class="vazio">Lendo o quadro...</div></div>
+</body>
+</html>

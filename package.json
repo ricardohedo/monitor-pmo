@@ -31,7 +31,11 @@
       "js/area.js",
       "js/higiene.js",
       "js/metas.js",
-      "js/relatorio.js"
+      "js/relatorio.js",
+      "js/calendario.js",
+      "js/capacidade.js",
+      "js/resumogestor.js",
+      "js/triagem.js"
     ]
   },
   "devDependencies": {

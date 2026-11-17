@@ -57,16 +57,20 @@
     area: { texto: 'Por área solicitante', pagina: './area.html', titulo: 'Projetos por área solicitante', cheia: false },
     higiene: { texto: 'Higiene do quadro', pagina: './higiene.html', titulo: 'Higiene do quadro', cheia: false },
     metas: { texto: 'Metas do PMO', pagina: './metas.html', titulo: 'Metas do PMO', cheia: false },
-    relatorio: { texto: 'Relatório executivo', pagina: './relatorio.html', titulo: 'Relatório executivo do portfólio', cheia: false }
+    relatorio: { texto: 'Relatório executivo', pagina: './relatorio.html', titulo: 'Relatório executivo do portfólio', cheia: false },
+    calendario: { texto: 'Calendário mensal', pagina: './calendario.html', titulo: 'Calendário: prazos e datas do varejo', cheia: true },
+    capacidade: { texto: 'Capacidade por mês', pagina: './capacidade.html', titulo: 'Capacidade: esforço que vence em cada mês', cheia: false },
+    resumogestor: { texto: 'Resumo por gestor', pagina: './resumogestor.html', titulo: 'Resumo semanal por gestor (para o Chat)', cheia: false },
+    triagem: { texto: 'Triagem de demandas', pagina: './triagem.html', titulo: 'Triagem de demandas novas', cheia: false }
   };
 
   // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
   var PACOTES = {
     base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
     planejamento: { badges: false, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
-      itens: ['roadmap', 'matriz', 'prazos', 'varejo', 'radar'] } },
+      itens: ['roadmap', 'calendario', 'matriz', 'prazos', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
-      itens: ['riscos', 'cadastro', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'relatorio'] } },
+      itens: ['riscos', 'cadastro', 'triagem', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
     // Estado antes da separação (conector sem <meta name="pacote">).
     tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
       menu: { texto: 'Mais visões PMO', icone: 'atuar',
