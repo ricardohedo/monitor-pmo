@@ -14,8 +14,8 @@ Somente leitura: não altera cards, etiquetas nem campos.
 | Verso do card | Saúde, prazo com desvio, ritmo (progresso das checklists x prazo decorrido) e conformidade com o padrão PMO |
 | Cabeçalho do board | Botão **Monitor PMO**: painel com KPIs, fila de atenção, carga por pessoa e por lista, e "Copiar resumo" para e-mail/WhatsApp |
 
-## Mais visões PMO (botão no cabeçalho do board)
-Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/config.js`.
+## Visões (três Power-Ups: Monitor PMO, PMO Planejamento, PMO Governança)
+Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/config.js`. Qual visão fica em qual Power-Up: `PACOTES` em `js/connector.js`.
 
 | Visão | Para quê |
 |---|---|
@@ -30,6 +30,10 @@ Todas somente leitura, calculadas ao vivo do Trello. Limites e metas em `js/conf
 | Higiene do quadro | Concluído sem evidência, concluído com checklist pendente, revisão e pausado sem comentário |
 | Metas do PMO | Missões com data (`config.metas.missoes`) e progresso ao vivo |
 | Relatório executivo | Resumo em texto para a diretoria, pronto para copiar |
+| Calendário mensal | Grade do mês com prazos dos projetos, feriados e datas do varejo |
+| Capacidade por mês | Esforço (pontos) que vence em cada mês; destaca picos antes de datas fortes |
+| Resumo por gestor | Mensagem semanal pronta para colar no Chat, uma por gestor |
+| Triagem de demandas | O que falta para uma demanda nova virar projeto pronto para priorizar |
 
 Base comum: `js/itens.js` (monta os itens do board) e `js/comum.js` (telas). Cada visão tem um módulo puro testado (`js/<nome>.js`) e uma tela (`js/<nome>view.js` + `<nome>.html`).
 
