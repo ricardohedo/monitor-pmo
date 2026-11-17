@@ -84,7 +84,14 @@
     var porLista = Object.keys(listasMap).map(function (k) { return listasMap[k]; });
 
     var ativos = porCor.vermelho + porCor.amarelo + porCor.verde;
+    var ativosItens = todos.filter(function (i) { return i.cor !== 'cinza'; });
+    function conta(prefixo) {
+      return ativosItens.filter(function (i) {
+        return i.motivos.some(function (m) { return m.indexOf(prefixo) === 0; });
+      }).length;
+    }
     return {
+      alertas: { semPrazo: conta('Sem prazo'), parado: conta('Parado'), impedimento: conta('Impedimento'), ritmo: conta('Ritmo baixo') },
       avaliados: avaliados,
       ativos: ativos,
       porCor: porCor,
@@ -108,6 +115,7 @@
       if (f.cor) { if (i.cor !== f.cor) return false; }
       else if (i.cor === 'cinza') return false;
       if (f.lista !== undefined && f.lista !== null && i.lista !== f.lista) return false;
+      if (f.motivo && !i.motivos.some(function (m) { return m.indexOf(f.motivo) === 0; })) return false;
       if (f.pessoa) {
         if (f.pessoa === SEM_RESPONSAVEL) { if (i.responsaveis.length) return false; }
         else if (i.responsaveis.indexOf(f.pessoa) === -1) return false;

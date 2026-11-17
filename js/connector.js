@@ -61,16 +61,19 @@
     calendario: { texto: 'Calendário mensal', pagina: './calendario.html', titulo: 'Calendário: prazos e datas do varejo', cheia: true },
     capacidade: { texto: 'Capacidade por mês', pagina: './capacidade.html', titulo: 'Capacidade: esforço que vence em cada mês', cheia: false },
     resumogestor: { texto: 'Resumo por gestor', pagina: './resumogestor.html', titulo: 'Resumo semanal por gestor (para o Chat)', cheia: false },
-    triagem: { texto: 'Triagem de demandas', pagina: './triagem.html', titulo: 'Triagem de demandas novas', cheia: false }
+    triagem: { texto: 'Triagem de demandas', pagina: './triagem.html', titulo: 'Triagem de demandas novas', cheia: false },
+    checklists: { texto: 'Checklists', pagina: './checklists.html', titulo: 'Acompanhamento de checklists', cheia: false },
+    novos: { texto: 'Novos projetos', pagina: './novos.html', titulo: 'Novos projetos: criados do jeito certo?', cheia: false },
+    lista: { texto: 'Lista de projetos', pagina: './lista.html', titulo: 'Lista de projetos', cheia: true }
   };
 
   // botoes = botões diretos no cabeçalho; menu = um botão que abre a lista de visões.
   var PACOTES = {
     base: { badges: true, botoes: ['monitor', 'meudia', 'pauta', 'tendencia', 'atuar'] },
     planejamento: { badges: false, botoes: [], menu: { texto: 'Planejamento PMO', icone: 'roadmap',
-      itens: ['roadmap', 'calendario', 'matriz', 'prazos', 'varejo', 'capacidade', 'radar'] } },
+      itens: ['lista', 'roadmap', 'calendario', 'matriz', 'prazos', 'checklists', 'varejo', 'capacidade', 'radar'] } },
     governanca: { badges: false, botoes: [], menu: { texto: 'Governança PMO', icone: 'riscos',
-      itens: ['riscos', 'cadastro', 'triagem', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
+      itens: ['riscos', 'cadastro', 'triagem', 'novos', 'higiene', 'area', 'carga', 'conquistas', 'metas', 'resumogestor', 'relatorio'] } },
     // Estado antes da separação (conector sem <meta name="pacote">).
     tudo: { badges: true, botoes: ['monitor', 'roadmap', 'matriz', 'meudia', 'riscos', 'pauta', 'tendencia'],
       menu: { texto: 'Mais visões PMO', icone: 'atuar',

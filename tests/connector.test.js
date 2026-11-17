@@ -44,7 +44,7 @@ describe('connector por pacote', () => {
     expect(textos(carregar('inexistente'))).toHaveLength(8);
     expect(Object.keys(carregar(null))).toHaveLength(3);
   });
-  test('os três pacotes cobrem as 22 visões sem repetir nenhuma e cada página existe', () => {
+  test('os três pacotes cobrem as 25 visões sem repetir nenhuma e cada página existe', () => {
     const vistas = [];
     ['base', 'planejamento', 'governanca'].forEach((p) => {
       const itens = [];
@@ -57,8 +57,8 @@ describe('connector por pacote', () => {
       });
       itens.forEach((m) => vistas.push(m.url));
     });
-    expect(vistas).toHaveLength(22);
-    expect(new Set(vistas).size).toBe(22);
+    expect(vistas).toHaveLength(25);
+    expect(new Set(vistas).size).toBe(25);
     vistas.forEach((u) => {
       const arq = u.replace('https://exemplo.test/monitor/', '');
       expect(fs.existsSync(path.join(__dirname, '..', arq))).toBe(true);

@@ -31,6 +31,31 @@
     return it && it.value && it.value.text ? it.value.text : null;
   }
 
+  // Data de criação do card: os 8 primeiros caracteres do id do Trello são um timestamp em hexadecimal.
+  function criadoEm(id) {
+    var h = String(id || '').slice(0, 8);
+    if (!/^[0-9a-f]{8}$/i.test(h)) return null;
+    return new Date(parseInt(h, 16) * 1000).toISOString();
+  }
+
+  // Resumo das checklists (itens feitos, vencidos e sem prazo). null = o Trello não entregou as checklists.
+  function resumoChecklists(card, agora, tz) {
+    if (!Array.isArray(card.checklists)) return null;
+    var r = { total: 0, feitos: 0, vencidos: 0, semPrazo: 0, listas: [] };
+    card.checklists.forEach(function (cl) {
+      var its = cl.checkItems || [];
+      var l = { nome: cl.name || '', total: its.length, feitos: 0, vencidos: 0, semPrazo: 0 };
+      its.forEach(function (it) {
+        if (it.state === 'complete') l.feitos++;
+        else if (it.due) { if (H.diasEntre(it.due, agora, tz) < 0) l.vencidos++; }
+        else l.semPrazo++;
+      });
+      r.total += l.total; r.feitos += l.feitos; r.vencidos += l.vencidos; r.semPrazo += l.semPrazo;
+      r.listas.push(l);
+    });
+    return r;
+  }
+
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
 
   /* montarItens(cards, ctx, config)
@@ -63,6 +88,8 @@
         esforco: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoEsforco)),
         parado: card.dateLastActivity ? H.diasEntre(ctx.agora, card.dateLastActivity, tz) : null,
         faltando: c.faltando, aderencia: c.percent,
+        criadoEm: criadoEm(card.id),
+        checklists: resumoChecklists(card, ctx.agora, tz),
         etiquetas: (card.labels || []).map(function (l) { return norm(l.name); }),
         area: valorCampo(card, ctx.camposDef, config.campoArea),
         anexos: b.attachments === undefined ? null : b.attachments,
@@ -80,6 +107,8 @@
     montarItens: montarItens,
     normTexto: norm,
     valorCampo: valorCampo,
+    criadoEm: criadoEm,
+    resumoChecklists: resumoChecklists,
     pluralPMO: plural,
     temMotivo: temMotivo
   };

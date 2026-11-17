@@ -22,6 +22,7 @@
       t.sizeTo('body').catch(function () {});
     }).catch(U.erro);
   });
+  document.getElementById('imprimir').addEventListener('click', function () { window.print(); });
   document.getElementById('copiar').addEventListener('click', function () {
     if (rel) U.copiar(rel.texto, document.getElementById('msg'), 'Relatório copiado. Cole no e-mail ou no Chat.');
   });

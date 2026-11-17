@@ -70,9 +70,9 @@
 
     // 2) Destravar: sem responsável, parado ou ritmo baixo
     secao('Destravar (precisa de ajuda)', itens.filter(function (i) {
-      return tem(i, 'Sem responsável') || tem(i, 'Parado') || tem(i, 'Ritmo baixo');
+      return tem(i, 'Sem responsável') || tem(i, 'Impedimento') || tem(i, 'Parado') || tem(i, 'Ritmo baixo');
     }), function (i) {
-      return i.s.motivos.filter(function (m) { return /^(Sem responsável|Parado|Ritmo baixo)/.test(m); }).join('; ');
+      return i.s.motivos.filter(function (m) { return /^(Sem responsável|Impedimento|Parado|Ritmo baixo)/.test(m); }).join('; ');
     }, null, true);
 
     // 3) Prazo: vencidos e próximos

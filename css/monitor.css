@@ -50,3 +50,8 @@ a.num-link { color: var(--azul); cursor: pointer; font-weight: 600; text-decorat
 a.num-link:hover { text-decoration: underline; }
 .filtro { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px;
   padding: 8px 12px; background: #e9f2ff; border-radius: 4px; font-size: 13px; }
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.chip { font-size: 12px; padding: 3px 10px; border-radius: 12px; }
+.chip.sel { outline: 2px solid var(--azul); }
+.chip:disabled { opacity: .5; cursor: default; }

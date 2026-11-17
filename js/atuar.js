@@ -13,6 +13,7 @@
     prazoProximo: "Vai caber no prazo? Se não, ajuste o 'Fim planejado' e comente o motivo.",
     parado: 'Comente no card o que está acontecendo (ou marque um item da checklist).',
     ritmo: 'A checklist anda mais devagar que o prazo: marque o que já foi feito ou replaneje.',
+    impedimento: 'Registre no card o que bloqueia, quem pode destravar e até quando.',
     semPrazo: "Preencha 'Início planejado' e 'Fim planejado' no card."
   };
 
@@ -26,6 +27,7 @@
     if (i.diasPrazo !== null && i.diasPrazo >= 0 && I.temMotivo(i, 'Vence')) { p += w.prazoProximo; chaves.push('prazoProximo'); }
     if (I.temMotivo(i, 'Parado')) { p += w.parado; chaves.push('parado'); }
     if (I.temMotivo(i, 'Ritmo baixo')) { p += w.ritmo; chaves.push('ritmo'); }
+    if (I.temMotivo(i, 'Impedimento')) { p += w.impedimento; chaves.push('impedimento'); }
     if (I.temMotivo(i, 'Sem prazo')) { p += w.semPrazo; chaves.push('semPrazo'); }
     if (chaves.length) {
       p += ac.bonusPrioridade[i.prioridade] || 0;

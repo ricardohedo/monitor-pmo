@@ -21,6 +21,8 @@
       listasIgnoradas: ['NOVA DEMANDA'],
       // Etiquetas que pausam o semáforo (o card aparece como cinza).
       etiquetasPausado: ['Pausado'],
+      // Etiquetas que marcam projeto travado (alerta próprio, como no dashboard do PMO).
+      etiquetasImpedimento: ['Impedimento'],
 
       // Ritmo: compara % das checklists feitas com % do prazo decorrido.
       // Só vale para cards nas listas abaixo (projeto já iniciado).
@@ -116,7 +118,7 @@
         comece: 3,           // quantos entram em "Comece por estes"
         depois: 5,           // quantos entram em "Depois"
         pesos: { atrasado: 40, atrasoPorDia: 1, atrasoMax: 30, semResponsavel: 30,
-                 prazoProximo: 20, parado: 15, ritmo: 15, semPrazo: 10, urgente: 30 },
+                 prazoProximo: 20, impedimento: 25, parado: 15, ritmo: 15, semPrazo: 10, urgente: 30 },
         bonusPrioridade: { maxima: 50, alta: 30, media: 10 },
         quasePronto: 0.9, minimoItens: 3,
         diasEmRisco: 14, progressoEmRisco: 0.5
@@ -169,6 +171,12 @@
         campos: ['Área solicitante', 'Impacto no negócio', 'Esforço estimado', 'Prioridade'],
         diasEspera: 14                  // demanda parada há mais disso = esperando demais
       },
+
+      // Novos projetos: qualidade da criação (cards criados do modelo "NOME DO PROJETO").
+      novos: { meses: 6, recentes: 8 },
+
+      // Lista de projetos: o que aparece e em que ordem de prioridade.
+      lista: { ordemPrioridade: ['maxima', 'alta', 'media', 'baixa'] },
 
       // Padrão PMO (card criado do template "NOME DO PROJETO").
       padrao: {

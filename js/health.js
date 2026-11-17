@@ -140,6 +140,11 @@
       motivos.push({ cor: 'vermelho', texto: 'Sem responsável' });
     }
 
+    var impedido = (card.labels || []).some(function (l) {
+      return contem(l.name, config.etiquetasImpedimento);
+    });
+    if (impedido) motivos.push({ cor: 'amarelo', texto: 'Impedimento' });
+
     if (!prazo) {
       motivos.push({ cor: 'amarelo', texto: 'Sem prazo' });
     } else {

@@ -107,6 +107,7 @@
     var partes = [];
     if (f.cor) partes.push(NOME_COR[f.cor]);
     if (f.pessoa) partes.push(f.pessoa);
+    if (f.motivo) partes.push(f.motivo);
     if (f.lista !== undefined && f.lista !== null) partes.push(f.lista);
     if (!f.cor) partes.unshift('Ativos');
     return partes.join(' · ');
@@ -156,6 +157,17 @@
       info.forEach(function (n, i) { if (i) av.appendChild(document.createTextNode('  ·  ')); av.appendChild(n); });
       box.appendChild(av);
     }
+
+    var chips = el('div', 'chips');
+    [['Sem prazo', 'Sem prazo', r.alertas.semPrazo], ['Parado', 'Sem interação (>' + M.config.diasParado + 'd)', r.alertas.parado],
+      ['Impedimento', 'Impedimento', r.alertas.impedimento], ['Ritmo baixo', 'Ritmo baixo', r.alertas.ritmo]].forEach(function (c) {
+      var b = el('button', 'chip' + (estado.filtro && estado.filtro.motivo === c[0] ? ' sel' : ''), c[1] + ': ' + c[2]);
+      b.type = 'button';
+      b.disabled = !c[2];
+      b.addEventListener('click', function () { filtrarPor({ motivo: c[0] }); });
+      chips.appendChild(b);
+    });
+    box.appendChild(chips);
 
     if (estado.filtro) {
       var itens = M.filtrar(r, estado.filtro);

@@ -54,16 +54,29 @@
 
   function tag(cor, txt) { return el('span', 'tag ' + cor, txt); }
 
+  /* Lê os cards; com `comChecklists`, completa com as checklists se o Trello não as entregar junto. */
+  function lerCards(t, comChecklists) {
+    return t.cards('all').then(function (cards) {
+      if (!comChecklists || !cards.length || Array.isArray(cards[0].checklists)) return cards;
+      return t.cards('id', 'checklists').then(function (extra) {
+        var mapa = {};
+        extra.forEach(function (c) { mapa[c.id] = c.checklists; });
+        cards.forEach(function (c) { if (Array.isArray(mapa[c.id])) c.checklists = mapa[c.id]; });
+        return cards;
+      }).catch(function () { return cards; });
+    });
+  }
+
   /* Lê o board e devolve os itens prontos para as visões. */
-  function lerItens(t) {
+  function lerItens(t, comChecklists) {
     return Promise.all([
-      t.cards('all'), t.lists('id', 'name'), t.board('customFields', 'members'), t.member('id', 'fullName')
+      lerCards(t, comChecklists), t.lists('id', 'name'), t.board('customFields', 'members'), t.member('id', 'fullName')
     ]).then(function (r) {
       var membros = r[2].members || [];
       var itens = M.montarItens(r[0], {
         agora: new Date(), camposDef: r[2].customFields || [], listas: r[1], membros: membros
       }, M.config);
-      return { itens: itens, membros: membros, eu: r[3] || {} };
+      return { itens: itens, cards: r[0], listas: r[1], camposDef: r[2].customFields || [], membros: membros, eu: r[3] || {} };
     });
   }
 
@@ -71,6 +84,6 @@
     document.getElementById('conteudo').textContent = 'Erro ao carregar: ' + (e && e.message ? e.message : e);
   }
 
-  M.ui = { prazoTxt: prazoTxt, el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
+  M.ui = { lerCards: lerCards, prazoTxt: prazoTxt, el: el, dataCurta: dataCurta, textoDias: textoDias, linkCard: linkCard, kpi: kpi,
     copiar: copiar, tag: tag, lerItens: lerItens, erro: erro };
 })();
