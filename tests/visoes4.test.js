@@ -49,6 +49,11 @@ describe('montarCalendario', () => {
     expect(r.totalPrazos).toBe(2);
     expect(dias.filter(d => d.fimDeSemana).length).toBe(10);
   });
+  test('ano/mês nulos (como a tela envia) caem no mês de hoje', () => {
+    const r = montarCalendario([], config, AGORA, null, null);
+    expect([r.ano, r.mes, r.titulo]).toEqual([2026, 10, 'novembro de 2026']);
+    expect(montarCalendario([], config, AGORA, undefined, undefined).titulo).toBe('novembro de 2026');
+  });
   test('navegação entre meses e virada de ano; dias fora do mês marcados', () => {
     const jan = montarCalendario([], config, AGORA, 2027, 0);
     expect(jan.anterior).toEqual({ ano: 2026, mes: 11 });

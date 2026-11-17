@@ -13,13 +13,13 @@
 
   function iso(chave) { return new Date(chave).toISOString().slice(0, 10); }
 
-  /* montarCalendario(itens, config, agora, ano, mes) - mes 0-11; sem ano/mes = mês de hoje.
+  /* montarCalendario(itens, config, agora, ano, mes) - mes 0-11; sem ano/mes (undefined ou null) = mês de hoje.
      -> { ano, mes, titulo, semanas: [[dia x7]], totalPrazos, anterior, proximo } */
   function montarCalendario(itens, config, agora, ano, mes) {
     var tz = config.tzOffsetHoras;
     var hoje = H.chaveDia(agora, tz);
     var hj = new Date(hoje);
-    if (ano === undefined || mes === undefined) { ano = hj.getUTCFullYear(); mes = hj.getUTCMonth(); }
+    if (ano == null || mes == null) { ano = hj.getUTCFullYear(); mes = hj.getUTCMonth(); }
 
     var primeiro = Date.UTC(ano, mes, 1);
     var ultimo = Date.UTC(ano, mes + 1, 0);
