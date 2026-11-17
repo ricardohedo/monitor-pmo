@@ -8,7 +8,7 @@
 
   function linhaDe(i) {
     return {
-      id: i.id, name: i.name, area: i.area || '', fase: i.lista, prioridade: i.prioridade,
+      id: i.id, name: i.name, area: i.area || '', fase: i.lista, prioridade: i.prioridade, prioridadeTxt: i.prioridadeTxt,
       responsaveis: i.responsaveis, prazo: i.prazo, diasPrazo: i.diasPrazo,
       progresso: i.progresso, cor: i.cor, rotulo: i.s.rotulo, ativo: i.ativo
     };
@@ -25,7 +25,9 @@
     var fases = [], prioridades = [];
     base.forEach(function (l) {
       if (fases.indexOf(l.fase) === -1) fases.push(l.fase);
-      if (l.prioridade && prioridades.indexOf(l.prioridade) === -1) prioridades.push(l.prioridade);
+      if (l.prioridade && !prioridades.some(function (p) { return p.valor === l.prioridade; })) {
+        prioridades.push({ valor: l.prioridade, rotulo: l.prioridadeTxt });
+      }
     });
 
     var linhas = base.filter(function (l) {
@@ -60,6 +62,7 @@
       return (x < y ? -1 : x > y ? 1 : 0) * dir || a.name.localeCompare(b.name);
     });
 
+    prioridades.sort(function (a, b) { return rank.indexOf(a.valor) - rank.indexOf(b.valor); });
     return { linhas: linhas, total: base.length, fases: fases.sort(), prioridades: prioridades };
   }
 
@@ -70,7 +73,7 @@
     var cab = ['Projeto', 'Área', 'Fase', 'Prioridade', 'Responsáveis', 'Prazo', 'Dias p/ prazo', 'Progresso %', 'Saúde'];
     var out = [cab.map(aspas).join(';')];
     linhas.forEach(function (l) {
-      out.push([l.name, l.area, l.fase, l.prioridade, l.responsaveis.join(', '),
+      out.push([l.name, l.area, l.fase, l.prioridadeTxt, l.responsaveis.join(', '),
         l.prazo ? new Date(l.prazo).toISOString().slice(0, 10) : '', l.diasPrazo,
         l.progresso === null ? '' : Math.round(l.progresso * 100), l.rotulo].map(aspas).join(';'));
     });

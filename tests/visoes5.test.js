@@ -69,6 +69,11 @@ describe('criadoEm e resumoChecklists', () => {
     expect(resumoChecklists({}, AGORA, -3)).toBeNull();
     expect(resumoChecklists({ checklists: [{ name: 'X' }] }, AGORA, -3).total).toBe(0);
   });
+  test('itens nos badges e vazios nas checklists = detalhes não entregues (null)', () => {
+    const vazio = { badges: { checkItems: 21 }, checklists: [cl('A', []), cl('B', [])] };
+    expect(resumoChecklists(vazio, AGORA, -3)).toBeNull();
+    expect(montarChecklists(itens([card('Real', { badges: { checkItems: 4, checkItemsChecked: 1 }, checklists: [cl('A', [])] })])).disponivel).toBe(false);
+  });
   test('item vence hoje não é vencido', () => {
     expect(resumoChecklists({ checklists: [cl('A', [it('incomplete', dia(0))])] }, AGORA, -3).vencidos).toBe(0);
   });
@@ -157,6 +162,7 @@ describe('montarLista e CSV', () => {
     expect(montarLista(it0, config, { status: 'sem-responsavel' }).linhas.map(l => l.name)).toEqual(['Alfa']);
     expect(montarLista(it0, config, { status: 'criticos' }).linhas.map(l => l.name).sort()).toEqual(['Alfa', 'Beta']);
     expect(montarLista(it0, config, { status: 'sem-prazo', incluirInativos: true }).linhas.map(l => l.name)).toEqual(['Gama']);
+    expect(montarLista(it0, config).prioridades).toEqual([{ valor: 'maxima', rotulo: 'Máxima' }, { valor: 'baixa', rotulo: 'Baixa' }]);
     expect(montarLista(it0, config, { prioridade: 'maxima' }).linhas.map(l => l.name)).toEqual(['Beta']);
     expect(montarLista(it0, config, { busca: 'ana' }).linhas.map(l => l.name)).toEqual(['Beta']);
     expect(montarLista(it0, config, { fase: 'Concluídos' }).linhas).toEqual([]);
@@ -182,6 +188,8 @@ describe('montarLista e CSV', () => {
     expect(linhas[1]).toContain('"Com ""aspas""; e ponto"');
     expect(linhas[1]).toContain('"Ana Souza"');
     expect(linhas[1]).toContain('"25"');
+    const comPrio = paraCSV(montarLista(base(), config).linhas);
+    expect(comPrio).toContain('"Máxima"');
     expect(paraCSV([])).toBe(linhas[0]);
   });
 });

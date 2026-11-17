@@ -53,6 +53,9 @@
       r.total += l.total; r.feitos += l.feitos; r.vencidos += l.vencidos; r.semPrazo += l.semPrazo;
       r.listas.push(l);
     });
+    // O Trello entrega os nomes das checklists, mas os itens vêm vazios no nível do board:
+    // com itens nos badges e nenhum nas checklists, os detalhes não foram entregues.
+    if (r.total === 0 && card.badges && card.badges.checkItems > 0) return null;
     return r;
   }
 
@@ -83,6 +86,7 @@
         responsaveis: ids.map(function (id) { return nomeDoMembro(ctx.membros, id); }),
         total: total, feitos: feitos, progresso: total ? feitos / total : null,
         prioridade: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoPrioridade)),
+        prioridadeTxt: H.valorLista(card, ctx.camposDef, config.matriz.campoPrioridade) || '',
         urgente: norm(H.valorLista(card, ctx.camposDef, 'Urgente')) === 'sim',
         impacto: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoImpacto)),
         esforco: norm(H.valorLista(card, ctx.camposDef, config.matriz.campoEsforco)),

@@ -15,7 +15,7 @@
       ? r.total + ' itens de checklist em ' + r.projetos.length + ' projetos ativos · ' + r.vencidos + ' vencidos · ' + r.semPrazo + ' sem prazo'
       : 'Nenhum item de checklist nos projetos ativos.';
     if (!r.disponivel) {
-      box.appendChild(U.el('div', 'aviso', 'O Trello não entregou os itens das checklists a este Power-Up: aparece só a contagem de itens feitos. Prazos por item (vencidos e sem prazo) ficam indisponíveis.'));
+      box.appendChild(U.el('div', 'aviso', 'O Trello não entrega os itens das checklists a este Power-Up (só os nomes): aparece a contagem de itens feitos, sem prazo por item. Para ver itens vencidos e sem prazo é preciso autorizar a leitura pela API do Trello (decisão pendente do PMO).'));
     }
     var kp = U.el('div', 'kpis');
     kp.appendChild(U.kpi('verde', r.feitos, 'Itens concluídos'));

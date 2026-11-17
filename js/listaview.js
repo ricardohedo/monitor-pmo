@@ -7,8 +7,6 @@
   var COLS = [['name', 'Projeto'], ['area', 'Área'], ['fase', 'Fase'], ['prioridade', 'Prioridade'],
     ['responsaveis', 'Responsáveis'], ['diasPrazo', 'Prazo'], ['progresso', 'Progresso'], ['cor', 'Saúde']];
 
-  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
-
   function filtro() {
     return {
       busca: document.getElementById('busca').value,
@@ -23,7 +21,10 @@
     var sel = document.getElementById(id), atual = sel.value;
     sel.textContent = '';
     var o = U.el('option', null, rotulo); o.value = ''; sel.appendChild(o);
-    valores.forEach(function (v) { var op = U.el('option', null, cap(v)); op.value = v; if (v === atual) op.selected = true; sel.appendChild(op); });
+    valores.forEach(function (v) {
+      var valor = typeof v === 'string' ? v : v.valor, texto = typeof v === 'string' ? v : v.rotulo;
+      var op = U.el('option', null, texto); op.value = valor; if (valor === atual) op.selected = true; sel.appendChild(op);
+    });
   }
 
   function desenhar() {
@@ -50,7 +51,7 @@
       var c1 = U.el('td'); c1.appendChild(U.linkCard(t, l)); tr.appendChild(c1);
       tr.appendChild(U.el('td', null, l.area));
       tr.appendChild(U.el('td', null, l.fase));
-      tr.appendChild(U.el('td', null, cap(l.prioridade)));
+      tr.appendChild(U.el('td', null, l.prioridadeTxt));
       tr.appendChild(U.el('td', null, l.responsaveis.join(', ') || 'Sem responsável'));
       var pz = U.el('td', null, l.prazo ? U.dataCurta(l.prazo) : 'Sem prazo');
       if (l.diasPrazo !== null) pz.appendChild(U.el('span', 'dias', U.textoDias(l.diasPrazo)));
